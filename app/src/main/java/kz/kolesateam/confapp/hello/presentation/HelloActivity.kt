@@ -34,13 +34,13 @@ class HelloActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        Log.d(TAG, "onStart")
+        Log.d(TAG, "Inside onStart")
     }
 
     override fun onResume() {
         super.onResume()
 
-        Log.d(TAG, "onResume")
+        Log.d(TAG, "Inside onResume")
     }
 
     override fun onPause() {

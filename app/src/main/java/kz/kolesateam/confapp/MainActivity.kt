@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
         findViewById(R.id.activity_main_open_hello_button)
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -30,13 +31,15 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
 
-        Log.d(TAG, "onRestart")
+        Log.d(TAG, "Inside onRestart")
     }
 
     override fun onStart() {
         super.onStart()
 
-        Log.d(TAG, "onStart")
+        Log.d(TAG, "Inside onStart")
+
+
     }
 
     override fun onResume() {
