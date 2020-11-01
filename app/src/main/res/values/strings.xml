@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">ConfApp</string>
+    <string name="what_is_ur_name">Как тебя зовут?</string>
+    <string name="main_act_btn_continue">Продолжить</string>
+    <string name="enter_name">Введите имя</string>
 </resources>
