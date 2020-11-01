@@ -3,4 +3,5 @@
     <string name="what_is_ur_name">Как тебя зовут?</string>
     <string name="main_act_btn_continue">Продолжить</string>
     <string name="enter_name">Введите имя</string>
+    <string name="welcom">Добро пожаловать %1s</string>
 </resources>
