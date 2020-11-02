@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -24,10 +26,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (isUserSaved()){
-            navigateToHelloScreen()
-            finish()
-        }
 
         setContentView(R.layout.activity_main)
 
@@ -38,19 +36,30 @@ class MainActivity : AppCompatActivity() {
             navigateToHelloScreen()
         }
 
+        nameEditText.addTextChangedListener(object : TextWatcher {
 
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                if (!p0.isNullOrBlank() && !p0.isNullOrEmpty()) {
+                    openHelloButton.setBackgroundColor(0xFF2582DE.toInt())
+                    openHelloButton.setTextColor(0xFFFFFFFF.toInt())
+                    openHelloButton.isEnabled = true
+                }
+                else if(p0.isNullOrBlank() && p0.isNullOrEmpty()){
+                    openHelloButton.setBackgroundColor(0xFFE9E8E9.toInt())
+                    openHelloButton.setTextColor(0xFF797777.toInt())
+                    openHelloButton.isEnabled = false
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {}
+        })
 
 
     }
 
-    private fun isUserSaved() : Boolean  {
-        val sharedPreferences: SharedPreferences = getSharedPreferences(
-                APPLICATION_SHARED_PREFERENCES,
-                Context.MODE_PRIVATE
-        )
-
-        return sharedPreferences.contains(USER_NAME_KEY)
-    }
 
     private fun saveUserName(userName: String) {
         val sharedPreferences: SharedPreferences = getSharedPreferences(

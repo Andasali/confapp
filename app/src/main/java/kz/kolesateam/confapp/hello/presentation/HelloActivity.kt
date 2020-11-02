@@ -21,7 +21,7 @@ class HelloActivity : AppCompatActivity() {
         val nameText: TextView = findViewById(R.id.activity_hello_name_text)
         val userName: String = getSavedUserName()
 
-        nameText.text = resources.getString(R.string.welcom, userName)
+        nameText.text = resources.getString(R.string.welcom_fmt, userName)
 
     }
 
