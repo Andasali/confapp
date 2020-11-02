@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="layout_spacing_16x">16dp</dimen>
+    <dimen name="layout_spacing_10x">10dp</dimen>
+    <dimen name="layout_spacing_20x">20dp</dimen>
+    <dimen name="height_size_16x">16dp</dimen>
+    <dimen name="height_size_44x">40dp</dimen>
+    <dimen name="height_size_210x">210dp</dimen>
+    <dimen name="text_size_16x">16sp</dimen>
+    <dimen name="text_size_24x">24sp</dimen>
+</resources>
