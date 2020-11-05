@@ -15,7 +15,7 @@ const val USER_NAME_KEY = "user_name"
 const val APPLICATION_SHARED_PREFERENCES = "application"
 
 class HelloActivity : AppCompatActivity() {
-    private val openHelloButton: Button by lazy {
+    private val openTestHelloButton: Button by lazy {
         findViewById(R.id.activity_hello_continue_button)
     }
 
@@ -26,9 +26,9 @@ class HelloActivity : AppCompatActivity() {
 
         val nameEditText: EditText = findViewById(R.id.activity_hello_editText_name)
 
-        openHelloButton.setOnClickListener {
+        openTestHelloButton.setOnClickListener {
             saveUserName(nameEditText.text.toString())
-            navigateToHelloScreen()
+            navigateToTestHelloScreen()
         }
 
         nameEditText.addTextChangedListener(object : TextWatcher {
@@ -38,7 +38,7 @@ class HelloActivity : AppCompatActivity() {
 
             override fun afterTextChanged(str: Editable?) {
                 val isInputEmpty: Boolean = str.toString().isBlank()
-                openHelloButton.isEnabled = !isInputEmpty
+                openTestHelloButton.isEnabled = !isInputEmpty
             }
         })
     }
@@ -56,8 +56,8 @@ class HelloActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    private fun navigateToHelloScreen() {
-        val helloScreenIntent = Intent(this, TestHelloActivity::class.java)
-        startActivity(helloScreenIntent)
+    private fun navigateToTestHelloScreen() {
+        val testHelloScreenIntent = Intent(this, TestHelloActivity::class.java)
+        startActivity(testHelloScreenIntent)
     }
 }
