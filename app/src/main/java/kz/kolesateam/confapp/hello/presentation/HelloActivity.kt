@@ -15,7 +15,6 @@ const val USER_NAME_KEY = "user_name"
 const val APPLICATION_SHARED_PREFERENCES = "application"
 
 class HelloActivity : AppCompatActivity() {
-
     private val openHelloButton: Button by lazy {
         findViewById(R.id.activity_hello_continue_button)
     }
@@ -33,7 +32,6 @@ class HelloActivity : AppCompatActivity() {
         }
 
         nameEditText.addTextChangedListener(object : TextWatcher {
-
             override fun beforeTextChanged(str: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
 
             override fun onTextChanged(str: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit

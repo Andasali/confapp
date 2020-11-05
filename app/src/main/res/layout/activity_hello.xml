@@ -11,7 +11,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_size_210x"
+        android:layout_height="@dimen/activity_hello_frame_layout_height_size"
         android:background="@color/main_activity_frame_background"
         >
 
@@ -40,7 +40,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/corona"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                />
+
         </LinearLayout>
     </FrameLayout>
 
@@ -65,7 +67,7 @@
         <EditText
             android:id="@+id/activity_hello_editText_name"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/height_size_44x"
+            android:layout_height="@dimen/activity_hello_edit_text_height_size"
             android:layout_marginTop="@dimen/layout_spacing_16x"
             android:textSize="@dimen/text_size_24x"
             android:inputType="text"
@@ -88,9 +90,7 @@
             android:background="@drawable/button_shape"
             android:enabled="false"
             android:fontFamily="@font/open_sans"
-
             />
 
     </LinearLayout>
-
 </LinearLayout>
