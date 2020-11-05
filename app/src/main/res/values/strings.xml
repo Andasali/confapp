@@ -3,5 +3,6 @@
     <string name="what_is_ur_name">Как тебя зовут?</string>
     <string name="continue_decision">Продолжить</string>
     <string name="enter_name">Введите имя</string>
-    <string name="welcom_fmt">Добро пожаловать, %1s</string>
+    <string name="welcome_fmt">Добро пожаловать, %1s</string>
+    <string name="default_welcome">Привет</string>
 </resources>

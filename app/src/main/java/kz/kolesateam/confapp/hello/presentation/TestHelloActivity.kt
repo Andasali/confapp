@@ -15,7 +15,7 @@ class TestHelloActivity : AppCompatActivity() {
         val nameText: TextView = findViewById(R.id.activity_test_hello_name_text)
         val userName: String = getSavedUserName()
 
-        nameText.text = resources.getString(R.string.welcom_fmt, userName)
+        nameText.text = resources.getString(R.string.welcome_fmt, userName)
     }
 
     private fun getSavedUserName(): String {
@@ -24,6 +24,8 @@ class TestHelloActivity : AppCompatActivity() {
                 Context.MODE_PRIVATE
         )
 
-        return sharedPreferences.getString(USER_NAME_KEY, "Hi") ?: "Hi"
+        val defaultUserNameKeyText =  resources.getString(R.string.default_welcome)
+
+        return sharedPreferences.getString(USER_NAME_KEY, defaultUserNameKeyText) ?: defaultUserNameKeyText
     }
 }
