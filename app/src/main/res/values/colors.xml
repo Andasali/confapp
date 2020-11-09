@@ -14,4 +14,7 @@
     <color name="text_primary_dark">#1C1819</color>
     <color name="edit_text_background">#00717171</color>
     <color name="edit_text_stroke">#1C181932</color>
+    <color name="activity_upcoming_events_sync_text_view_color">#2196F3</color>
+    <color name="activity_upcoming_events_async_text_view_color">#4CAF50</color>
+    <color name="activity_upcoming_events_error_text_view_color">#F44336</color>
 </resources>

@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import kz.kolesateam.confapp.R
+import kz.kolesateam.confapp.events.presentation.UpcomingEventsActivity
 
 const val USER_NAME_KEY = "user_name"
 const val APPLICATION_SHARED_PREFERENCES = "application"
@@ -28,7 +29,7 @@ class HelloActivity : AppCompatActivity() {
 
         openTestHelloButton.setOnClickListener {
             saveUserName(nameEditText.text.toString())
-            navigateToTestHelloScreen()
+            upcomingEventsScreen()
         }
 
         nameEditText.addTextChangedListener(object : TextWatcher {
@@ -59,5 +60,10 @@ class HelloActivity : AppCompatActivity() {
     private fun navigateToTestHelloScreen() {
         val testHelloScreenIntent = Intent(this, TestHelloActivity::class.java)
         startActivity(testHelloScreenIntent)
+    }
+
+    private fun upcomingEventsScreen() {
+        val upcomingEventsScreen = Intent(this, UpcomingEventsActivity::class.java)
+        startActivity(upcomingEventsScreen)
     }
 }

@@ -8,4 +8,5 @@
     <string name="sync_loading">Sync loading</string>
     <string name="async_loading">Async loading</string>
     <string name="activity_upcoming_events_text_view_default">some json</string>
+    <string name="connection_error_message">Произошло ошибка соединения</string>
 </resources>
