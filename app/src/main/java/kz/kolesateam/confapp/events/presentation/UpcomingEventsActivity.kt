@@ -67,6 +67,11 @@ class UpcomingEventsActivity : AppCompatActivity() {
             loadApiDataSync()
         }
 
+        upcomingEventsAsyncButton.setOnClickListener {
+            startProgressBar()
+            loadApiDataAsync()
+            stopProgressBar()
+        }
     }
 
     private fun loadApiDataSync() {
@@ -94,6 +99,32 @@ class UpcomingEventsActivity : AppCompatActivity() {
         }.start()
     }
 
+    private fun loadApiDataAsync() {
+        upcomingEventsResponseTextView.text = ""
+        startProgressBar()
+        apiClient.getUpcomingEvents().enqueue(
+            object: Callback<JsonNode> {
+                override fun onResponse(
+                    call: Call<JsonNode>,
+                    response: Response<JsonNode>) {
+                    if (response.isSuccessful) {
+                        val body: JsonNode = response.body()!!
+                        stopProgressBar()
+                        upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_async_text_view_color))
+                        upcomingEventsResponseTextView.text = body.toString()
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<JsonNode>,
+                    t: Throwable) {
+                    stopProgressBar()
+                    upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_error_text_view_color))
+                    upcomingEventsResponseTextView.text = t.localizedMessage
+                }
+            })
+    }
+
     private fun startProgressBar() {
         upcomingEventsProgressBar.visibility  = View.VISIBLE;
     }
@@ -101,4 +132,5 @@ class UpcomingEventsActivity : AppCompatActivity() {
     private fun stopProgressBar() {
         upcomingEventsProgressBar.visibility  = View.INVISIBLE;
     }
+
 }
