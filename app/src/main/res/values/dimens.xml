@@ -10,4 +10,6 @@
     <dimen name="text_size_24x">24sp</dimen>
     <dimen name="corner_radius_3x">3dp</dimen>
     <dimen name="stroke_width_1x">1dp</dimen>
+    <dimen name="progress_bar_size_50x">50dp</dimen>
+    <dimen name="acitvity_upcoming_events_progress_bar_margin">220dp</dimen>
 </resources>

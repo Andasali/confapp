@@ -5,4 +5,7 @@
     <string name="enter_name">Введите имя</string>
     <string name="welcome_fmt">Добро пожаловать, %1s</string>
     <string name="default_welcome">Привет</string>
+    <string name="sync_loading">Sync loading</string>
+    <string name="async_loading">Async loading</string>
+    <string name="activity_upcoming_events_text_view_default">some json</string>
 </resources>
