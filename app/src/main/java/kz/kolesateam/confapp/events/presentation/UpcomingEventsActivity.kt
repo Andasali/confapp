@@ -3,8 +3,6 @@ package kz.kolesateam.confapp.events.presentation
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kz.kolesateam.confapp.R
-import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -60,7 +58,8 @@ class UpcomingEventsActivity : AppCompatActivity() {
     private fun initViews() {
         upcomingEventsSyncButton = findViewById(R.id.activity_upcoming_events_button_sync)
         upcomingEventsAsyncButton = findViewById(R.id.activity_upcoming_events_button_async)
-        upcomingEventsResponseTextView = findViewById(R.id.activity_upcoming_events_text_view_json_result)
+        upcomingEventsResponseTextView =
+            findViewById(R.id.activity_upcoming_events_text_view_json_result)
         upcomingEventsProgressBar = findViewById(R.id.activity_upcoming_events_progress_bar)
 
         upcomingEventsSyncButton.setOnClickListener {
@@ -68,9 +67,7 @@ class UpcomingEventsActivity : AppCompatActivity() {
         }
 
         upcomingEventsAsyncButton.setOnClickListener {
-            startProgressBar()
             loadApiDataAsync()
-            stopProgressBar()
         }
     }
 
@@ -88,12 +85,12 @@ class UpcomingEventsActivity : AppCompatActivity() {
                         upcomingEventsResponseTextView.text = body.toString()
                     }
                 }
-            }
-            catch (e: ConnectException) {
+            } catch (e: ConnectException) {
                 runOnUiThread {
                     stopProgressBar()
                     upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_error_text_view_color))
-                    upcomingEventsResponseTextView.text = resources.getText(R.string.connection_error_message)
+                    upcomingEventsResponseTextView.text =
+                        resources.getText(R.string.connection_error_message)
                 }
             }
         }.start()
@@ -102,35 +99,36 @@ class UpcomingEventsActivity : AppCompatActivity() {
     private fun loadApiDataAsync() {
         upcomingEventsResponseTextView.text = ""
         startProgressBar()
-        apiClient.getUpcomingEvents().enqueue(
-            object: Callback<JsonNode> {
-                override fun onResponse(
-                    call: Call<JsonNode>,
-                    response: Response<JsonNode>) {
-                    if (response.isSuccessful) {
-                        val body: JsonNode = response.body()!!
-                        stopProgressBar()
-                        upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_async_text_view_color))
-                        upcomingEventsResponseTextView.text = body.toString()
-                    }
-                }
-
-                override fun onFailure(
-                    call: Call<JsonNode>,
-                    t: Throwable) {
+        apiClient.getUpcomingEvents().enqueue(object : Callback<JsonNode> {
+            override fun onResponse(
+                call: Call<JsonNode>,
+                response: Response<JsonNode>
+            ) {
+                if (response.isSuccessful) {
+                    val body: JsonNode = response.body()!!
                     stopProgressBar()
-                    upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_error_text_view_color))
-                    upcomingEventsResponseTextView.text = t.localizedMessage
+                    upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_async_text_view_color))
+                    upcomingEventsResponseTextView.text = body.toString()
                 }
-            })
+            }
+
+            override fun onFailure(
+                call: Call<JsonNode>,
+                t: Throwable
+            ) {
+                stopProgressBar()
+                upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_error_text_view_color))
+                upcomingEventsResponseTextView.text = t.localizedMessage
+            }
+        })
     }
 
     private fun startProgressBar() {
-        upcomingEventsProgressBar.visibility  = View.VISIBLE;
+        upcomingEventsProgressBar.visibility = View.VISIBLE;
     }
 
     private fun stopProgressBar() {
-        upcomingEventsProgressBar.visibility  = View.INVISIBLE;
+        upcomingEventsProgressBar.visibility = View.INVISIBLE;
     }
 
 }
