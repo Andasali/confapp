@@ -7,12 +7,14 @@ import kz.kolesateam.confapp.network.apiClient
 import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 class UpcomingEventsRepository {
     fun getUpcomingEventsSync(): ResponseData<List<BranchApiData>, String> {
         return try {
-            val response: Response<ResponseBody> = apiClient.getUpcomingEvents().execute()
+            val response: Response<ResponseBody> = apiClient.getUpcomingEventsHard().execute()
 
             if (response.isSuccessful) {
                 val responseBody: ResponseBody = response.body()!!
@@ -26,6 +28,28 @@ class UpcomingEventsRepository {
         } catch (e: Exception) {
             ResponseData.Error(e.localizedMessage)
         }
+    }
+
+    fun getUpcomingEventsAsync(result: (List<BranchApiData>) -> Unit, fail: (String?) -> Unit) {
+        apiClient.getUpcomingEventsAuto()
+            .enqueue(object : Callback<List<BranchApiData>> {
+                override fun onResponse(
+                    call: Call<List<BranchApiData>>,
+                    response: Response<List<BranchApiData>>
+                ) {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            result(it)
+                        }
+                    } else {
+                        fail(response.message())
+                    }
+                }
+
+                override fun onFailure(call: Call<List<BranchApiData>>, t: Throwable) {
+                    fail(t.localizedMessage)
+                }
+            })
     }
 
     private fun parseBranchFromJsonArray(branchJsonArray: JSONArray): List<BranchApiData> {

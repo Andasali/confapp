@@ -16,11 +16,7 @@ import kotlinx.coroutines.withContext
 import kz.kolesateam.confapp.events.data.Models.BranchApiData
 import kz.kolesateam.confapp.events.data.ResponseData
 import kz.kolesateam.confapp.events.data.UpcomingEventsRepository
-import kz.kolesateam.confapp.network.apiClient
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 
 const val RESPONSE_TEXT = "RESPONSE_TEXT"
 const val RESPONSE_TEXT_COLOR = "RESPONSE_TEXT_COLOR"
@@ -74,7 +70,7 @@ class UpcomingEventsActivity : AppCompatActivity() {
         }
 
         upcomingEventsAsyncButton.setOnClickListener {
-           // loadApiDataAsync()
+            loadApiDataAsync()
         }
     }
 
@@ -91,32 +87,18 @@ class UpcomingEventsActivity : AppCompatActivity() {
         }
     }
 
-//    private fun loadApiDataAsync() {
-//        upcomingEventsResponseTextView.text = ""
-//        startProgressBar()
-//        apiClient.getUpcomingEvents().enqueue(object : Callback<ResponseBody> {
-//            override fun onResponse(
-//                call: Call<ResponseBody>,
-//                response: Response<ResponseBody>
-//            ) {
-//                if (response.isSuccessful) {
-//                    val body: ResponseBody = response.body()!!
-//                    stopProgressBar()
-//                    upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_async_text_view_color))
-//                    upcomingEventsResponseTextView.text = body.toString()
-//                }
-//            }
-//
-//            override fun onFailure(
-//                call: Call<ResponseBody>,
-//                t: Throwable
-//            ) {
-//                stopProgressBar()
-//                upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_error_text_view_color))
-//                upcomingEventsResponseTextView.text = t.localizedMessage
-//            }
-//        })
-//    }
+    private fun loadApiDataAsync() {
+        startProgressBar()
+
+        upcomingEventsRepository.getUpcomingEventsAsync(
+            result = {
+                addText(it.toString(), DATA_ASYNC_TEXT_COLOR)
+            },
+            fail = {
+                addText(it, DATA_ERROR_TEXT_COLOR)
+            }
+        )
+    }
 
     private fun addText(text: String?, color: Int) {
         stopProgressBar()
