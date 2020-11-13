@@ -9,6 +9,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.fasterxml.jackson.databind.JsonNode
 import kz.kolesateam.confapp.events.data.ApiClient
+import kz.kolesateam.confapp.network.apiClient
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,13 +20,6 @@ import java.net.ConnectException
 
 const val RESPONSE_TEXT = "RESPONSE_TEXT"
 const val RESPONSE_TEXT_COLOR = "RESPONSE_TEXT_COLOR"
-
-val apiRetrofit: Retrofit = Retrofit.Builder()
-    .baseUrl("http://37.143.8.68:2020")
-    .addConverterFactory(JacksonConverterFactory.create())
-    .build()
-
-val apiClient: ApiClient = apiRetrofit.create(ApiClient::class.java)
 
 class UpcomingEventsActivity : AppCompatActivity() {
 
@@ -40,7 +35,7 @@ class UpcomingEventsActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState?.run {
+        outState.run {
             putString("RESPONSE_TEXT", upcomingEventsResponseTextView.text.toString())
             putInt("RESPONSE_TEXT_COLOR", upcomingEventsResponseTextView.currentTextColor)
         }
@@ -51,8 +46,8 @@ class UpcomingEventsActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
-        upcomingEventsResponseTextView.text = savedInstanceState?.getString("RESPONSE_TEXT")
-        upcomingEventsResponseTextView.setTextColor(savedInstanceState?.getInt("RESPONSE_TEXT_COLOR"))
+        upcomingEventsResponseTextView.text = savedInstanceState.getString("RESPONSE_TEXT")
+        upcomingEventsResponseTextView.setTextColor(savedInstanceState.getInt("RESPONSE_TEXT_COLOR"))
     }
 
     private fun initViews() {
@@ -76,13 +71,14 @@ class UpcomingEventsActivity : AppCompatActivity() {
         startProgressBar()
         Thread {
             try {
-                val response: Response<JsonNode> = apiClient.getUpcomingEvents().execute()
+                val response: Response<ResponseBody> = apiClient.getUpcomingEvents().execute()
                 if (response.isSuccessful) {
-                    val body: JsonNode = response.body()!!
+                    val responseBody: ResponseBody = response.body()!!
+                    val responseJsonString = responseBody.string()
                     runOnUiThread {
                         stopProgressBar()
                         upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_sync_text_view_color))
-                        upcomingEventsResponseTextView.text = body.toString()
+                        upcomingEventsResponseTextView.text = responseBody.toString()
                     }
                 }
             } catch (e: ConnectException) {
@@ -99,13 +95,13 @@ class UpcomingEventsActivity : AppCompatActivity() {
     private fun loadApiDataAsync() {
         upcomingEventsResponseTextView.text = ""
         startProgressBar()
-        apiClient.getUpcomingEvents().enqueue(object : Callback<JsonNode> {
+        apiClient.getUpcomingEvents().enqueue(object : Callback<ResponseBody> {
             override fun onResponse(
-                call: Call<JsonNode>,
-                response: Response<JsonNode>
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
             ) {
                 if (response.isSuccessful) {
-                    val body: JsonNode = response.body()!!
+                    val body: ResponseBody = response.body()!!
                     stopProgressBar()
                     upcomingEventsResponseTextView.setTextColor(resources.getColor(R.color.activity_upcoming_events_async_text_view_color))
                     upcomingEventsResponseTextView.text = body.toString()
@@ -113,7 +109,7 @@ class UpcomingEventsActivity : AppCompatActivity() {
             }
 
             override fun onFailure(
-                call: Call<JsonNode>,
+                call: Call<ResponseBody>,
                 t: Throwable
             ) {
                 stopProgressBar()
