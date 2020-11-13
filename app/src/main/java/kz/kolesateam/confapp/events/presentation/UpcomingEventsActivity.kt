@@ -74,7 +74,7 @@ class UpcomingEventsActivity : AppCompatActivity() {
         }
 
         upcomingEventsAsyncButton.setOnClickListener {
-            loadApiDataAsync()
+           // loadApiDataAsync()
         }
     }
 
