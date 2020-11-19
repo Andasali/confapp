@@ -1,9 +1,9 @@
 package kz.kolesateam.confapp.events.data
 
-import kz.kolesateam.confapp.events.data.Models.BranchApiData
-import kz.kolesateam.confapp.events.data.Models.EventApiData
-import kz.kolesateam.confapp.events.data.Models.SpeakerApiData
-import kz.kolesateam.confapp.network.apiClient
+import kz.kolesateam.confapp.events.data.models.BranchApiData
+import kz.kolesateam.confapp.events.data.models.EventApiData
+import kz.kolesateam.confapp.events.data.models.SpeakerApiData
+import kz.kolesateam.confapp.network.ApiClientProvider
 import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
@@ -12,6 +12,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class UpcomingEventsRepository {
+    private val apiClient: ApiClient = ApiClientProvider.getApiClient()
+
     fun getUpcomingEventsSync(): ResponseData<List<BranchApiData>, String> {
         return try {
             val response: Response<ResponseBody> = apiClient.getUpcomingEventsHard().execute()

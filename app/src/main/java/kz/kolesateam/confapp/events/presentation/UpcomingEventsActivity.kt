@@ -3,17 +3,17 @@ package kz.kolesateam.confapp.events.presentation
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kz.kolesateam.confapp.R
-import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kz.kolesateam.confapp.events.data.Models.BranchApiData
+import kz.kolesateam.confapp.events.data.models.BranchApiData
 import kz.kolesateam.confapp.events.data.ResponseData
 import kz.kolesateam.confapp.events.data.UpcomingEventsRepository
 
@@ -27,10 +27,10 @@ const val DATA_ERROR_TEXT_COLOR = R.color.activity_upcoming_events_error_text_vi
 
 class UpcomingEventsActivity : AppCompatActivity() {
 
-    private lateinit var upcomingEventsSyncButton: Button
-    private lateinit var upcomingEventsAsyncButton: Button
-    private lateinit var upcomingEventsResponseTextView: TextView
-    private lateinit var upcomingEventsProgressBar: ProgressBar
+    private lateinit var syncButton: Button
+    private lateinit var asyncButton: Button
+    private lateinit var responseTextView: TextView
+    private lateinit var progressBar: ProgressBar
     private lateinit var upcomingEventsRepository: UpcomingEventsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,14 +38,13 @@ class UpcomingEventsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_upcoming_events)
 
         initViews()
-
         upcomingEventsRepository = UpcomingEventsRepository()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.run {
-            putString("RESPONSE_TEXT", upcomingEventsResponseTextView.text.toString())
-            putInt("RESPONSE_TEXT_COLOR", upcomingEventsResponseTextView.currentTextColor)
+            putString(RESPONSE_TEXT, responseTextView.text.toString())
+            putInt(RESPONSE_TEXT_COLOR, responseTextView.currentTextColor)
         }
 
         super.onSaveInstanceState(outState)
@@ -54,65 +53,60 @@ class UpcomingEventsActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
-        upcomingEventsResponseTextView.text = savedInstanceState.getString("RESPONSE_TEXT")
-        upcomingEventsResponseTextView.setTextColor(savedInstanceState.getInt("RESPONSE_TEXT_COLOR"))
+        responseTextView.text = savedInstanceState.getString(RESPONSE_TEXT)
+        responseTextView.setTextColor(savedInstanceState.getInt(RESPONSE_TEXT_COLOR))
     }
 
     private fun initViews() {
-        upcomingEventsSyncButton = findViewById(R.id.activity_upcoming_events_button_sync)
-        upcomingEventsAsyncButton = findViewById(R.id.activity_upcoming_events_button_async)
-        upcomingEventsResponseTextView =
-            findViewById(R.id.activity_upcoming_events_text_view_json_result)
-        upcomingEventsProgressBar = findViewById(R.id.activity_upcoming_events_progress_bar)
+        syncButton = findViewById(R.id.activity_upcoming_events_button_sync)
+        asyncButton = findViewById(R.id.activity_upcoming_events_button_async)
+        responseTextView = findViewById(R.id.activity_upcoming_events_text_view_json_result)
+        progressBar = findViewById(R.id.activity_upcoming_events_progress_bar)
 
-        upcomingEventsSyncButton.setOnClickListener {
+        syncButton.setOnClickListener {
             loadApiDataSync()
         }
 
-        upcomingEventsAsyncButton.setOnClickListener {
+        asyncButton.setOnClickListener {
             loadApiDataAsync()
         }
     }
 
     private fun loadApiDataSync() = CoroutineScope(Main).launch {
-        startProgressBar()
+        showProgressBar(true)
 
         val response: ResponseData<List<BranchApiData>, String> = withContext(IO) {
             upcomingEventsRepository.getUpcomingEventsSync()
         }
 
         when (response) {
-            is ResponseData.Success -> addText(response.result.toString(), DATA_SYNC_TEXT_COLOR)
-            is ResponseData.Error -> addText(response.error, DATA_ERROR_TEXT_COLOR)
+            is ResponseData.Success -> showResult(response.result.toString(), DATA_SYNC_TEXT_COLOR)
+            is ResponseData.Error -> showResult(response.error, DATA_ERROR_TEXT_COLOR)
         }
     }
 
     private fun loadApiDataAsync() {
-        startProgressBar()
+        showProgressBar(true)
 
         upcomingEventsRepository.getUpcomingEventsAsync(
             result = {
-                addText(it.toString(), DATA_ASYNC_TEXT_COLOR)
+                showResult(it.toString(), DATA_ASYNC_TEXT_COLOR)
             },
             fail = {
-                addText(it, DATA_ERROR_TEXT_COLOR)
+                showResult(it, DATA_ERROR_TEXT_COLOR)
             }
         )
     }
 
-    private fun addText(text: String?, color: Int) {
-        stopProgressBar()
+    private fun showResult(text: String?, color: Int) {
+        showProgressBar(false)
 
-        upcomingEventsResponseTextView.text = text
-        upcomingEventsResponseTextView.setTextColor(ContextCompat.getColor(this, color))
+        responseTextView.text = text
+        responseTextView.setTextColor(ContextCompat.getColor(this, color))
     }
 
-    private fun startProgressBar() {
-        upcomingEventsProgressBar.visibility = View.VISIBLE;
-    }
-
-    private fun stopProgressBar() {
-        upcomingEventsProgressBar.visibility = View.INVISIBLE;
+    private fun showProgressBar(isVisible: Boolean) {
+        progressBar.isVisible = isVisible
     }
 
 }

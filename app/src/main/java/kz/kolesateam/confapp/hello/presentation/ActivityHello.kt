@@ -29,7 +29,7 @@ class HelloActivity : AppCompatActivity() {
 
         openTestHelloButton.setOnClickListener {
             saveUserName(nameEditText.text.toString())
-            upcomingEventsScreen()
+            navigateToUpcomingEventsScreen()
         }
 
         nameEditText.addTextChangedListener(object : TextWatcher {
@@ -57,12 +57,7 @@ class HelloActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    private fun navigateToTestHelloScreen() {
-        val testHelloScreenIntent = Intent(this, TestHelloActivity::class.java)
-        startActivity(testHelloScreenIntent)
-    }
-
-    private fun upcomingEventsScreen() {
+    private fun navigateToUpcomingEventsScreen() {
         val upcomingEventsScreen = Intent(this, UpcomingEventsActivity::class.java)
         startActivity(upcomingEventsScreen)
     }
