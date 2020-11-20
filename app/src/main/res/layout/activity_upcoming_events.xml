@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="@dimen/layout_spacing_10x"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/layout_spacing_10x"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/activity_upcoming_events_button_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/sync_loading"
+                android:textAllCaps="false"
+                />
+
+            <Button
+                android:id="@+id/activity_upcoming_events_button_async"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/async_loading"
+                android:textAllCaps="false"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/activity_upcoming_events_text_view_json_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/activity_upcoming_events_text_view_default"
+            />
+
+        <ProgressBar
+            android:id="@+id/activity_upcoming_events_progress_bar"
+            android:layout_width="@dimen/progress_bar_size_50x"
+            android:layout_height="@dimen/progress_bar_size_50x"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/acitvity_upcoming_events_progress_bar_margin"
+            android:visibility="invisible"
+            />
+    </LinearLayout>
+</ScrollView>
