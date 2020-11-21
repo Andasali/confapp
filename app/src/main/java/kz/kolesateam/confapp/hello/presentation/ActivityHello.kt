@@ -44,7 +44,6 @@ class HelloActivity : AppCompatActivity() {
         })
     }
 
-
     private fun saveUserName(userName: String) {
         val sharedPreferences: SharedPreferences = getSharedPreferences(
                 APPLICATION_SHARED_PREFERENCES,
