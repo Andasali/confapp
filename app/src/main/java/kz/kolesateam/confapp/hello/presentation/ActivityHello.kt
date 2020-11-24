@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import kz.kolesateam.confapp.R
 import kz.kolesateam.confapp.events.presentation.UpcomingEventsActivity
 
+const val SHARED_PREFERENCES_KEY = "confapp"
 const val USER_NAME_KEY = "user_name"
-const val APPLICATION_SHARED_PREFERENCES = "application"
 
 class HelloActivity : AppCompatActivity() {
     private val openTestHelloButton: Button by lazy {
@@ -46,8 +46,8 @@ class HelloActivity : AppCompatActivity() {
 
     private fun saveUserName(userName: String) {
         val sharedPreferences: SharedPreferences = getSharedPreferences(
-                APPLICATION_SHARED_PREFERENCES,
-                Context.MODE_PRIVATE
+            SHARED_PREFERENCES_KEY,
+            Context.MODE_PRIVATE
         )
 
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
