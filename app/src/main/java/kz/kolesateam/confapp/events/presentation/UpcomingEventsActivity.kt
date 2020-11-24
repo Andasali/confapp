@@ -6,34 +6,39 @@ import kz.kolesateam.confapp.R
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.fasterxml.jackson.databind.JsonNode
-import kz.kolesateam.confapp.events.data.ApiClient
-import kz.kolesateam.confapp.network.ApiClientProvider
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.net.ConnectException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kz.kolesateam.confapp.events.data.models.BranchApiData
+import kz.kolesateam.confapp.events.data.ResponseData
+import kz.kolesateam.confapp.events.data.UpcomingEventsRepository
 
-private const val RESPONSE_TEXT = "response_text"
-private const val RESPONSE_TEXT_COLOR = "response_text_color"
 
-private const val RESPONSE_SYNC = 0
-private const val RESPONSE_ASYNC = 1
-private const val RESPONSE_FAIL = -1
+const val RESPONSE_TEXT = "RESPONSE_TEXT"
+const val RESPONSE_TEXT_COLOR = "RESPONSE_TEXT_COLOR"
+
+const val DATA_ASYNC_TEXT_COLOR = R.color.activity_upcoming_events_async_text_view_color
+const val DATA_SYNC_TEXT_COLOR = R.color.activity_upcoming_events_sync_text_view_color
+const val DATA_ERROR_TEXT_COLOR = R.color.activity_upcoming_events_error_text_view_color
 
 class UpcomingEventsActivity : AppCompatActivity() {
 
-    private val apiClient: ApiClient = ApiClientProvider.getApiClient()
     private lateinit var syncButton: Button
     private lateinit var asyncButton: Button
     private lateinit var responseTextView: TextView
     private lateinit var progressBar: ProgressBar
+    private lateinit var upcomingEventsRepository: UpcomingEventsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upcoming_events)
+
         initViews()
+        upcomingEventsRepository = UpcomingEventsRepository()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -55,75 +60,53 @@ class UpcomingEventsActivity : AppCompatActivity() {
     private fun initViews() {
         syncButton = findViewById(R.id.activity_upcoming_events_button_sync)
         asyncButton = findViewById(R.id.activity_upcoming_events_button_async)
-        responseTextView =
-            findViewById(R.id.activity_upcoming_events_text_view_json_result)
+        responseTextView = findViewById(R.id.activity_upcoming_events_text_view_json_result)
         progressBar = findViewById(R.id.activity_upcoming_events_progress_bar)
 
         syncButton.setOnClickListener {
-            showProgressBar(true)
             loadApiDataSync()
         }
 
         asyncButton.setOnClickListener {
-            showProgressBar(true)
             loadApiDataAsync()
         }
     }
 
-    private fun loadApiDataSync() {
-        Thread {
-            try {
-                val response: Response<JsonNode> = apiClient.getUpcomingEvents().execute()
-                if (response.isSuccessful) {
-                    runOnUiThread {
-                        getResponseResult(response.body().toString(), RESPONSE_SYNC)
-                    }
-                }else{
-                    getResponseResult(response.errorBody().toString(), RESPONSE_FAIL)
-                }
-            } catch (e: ConnectException) {
-                runOnUiThread {
-                    getResponseResult(e.localizedMessage, RESPONSE_FAIL)
-                }
-            }
-        }.start()
+    private fun loadApiDataSync() = CoroutineScope(Main).launch {
+        showProgressBar(true)
+
+        val response: ResponseData<List<BranchApiData>, String> = withContext(IO) {
+            upcomingEventsRepository.getUpcomingEventsSync()
+        }
+
+        when (response) {
+            is ResponseData.Success -> showResult(response.result.toString(), DATA_SYNC_TEXT_COLOR)
+            is ResponseData.Error -> showResult(response.error, DATA_ERROR_TEXT_COLOR)
+        }
     }
 
     private fun loadApiDataAsync() {
-        apiClient.getUpcomingEvents().enqueue(
-            object : Callback<JsonNode> {
-                override fun onResponse(
-                    call: Call<JsonNode>,
-                    response: Response<JsonNode>
-                ) {
-                    if (response.isSuccessful) {
-                        getResponseResult(response.body().toString(), RESPONSE_ASYNC)
-                    } else {
-                        getResponseResult(response.errorBody().toString(), RESPONSE_FAIL)
-                    }
-                }
+        showProgressBar(true)
 
-                override fun onFailure(
-                    call: Call<JsonNode>,
-                    t: Throwable
-                ) {
-                    getResponseResult(t.localizedMessage, RESPONSE_FAIL)
-                }
-            })
+        upcomingEventsRepository.getUpcomingEventsAsync(
+            result = {
+                showResult(it.toString(), DATA_ASYNC_TEXT_COLOR)
+            },
+            fail = {
+                showResult(it, DATA_ERROR_TEXT_COLOR)
+            }
+        )
     }
 
-    private fun getResponseResult(responseText: String?, responseType: Int) {
+    private fun showResult(text: String?, color: Int) {
         showProgressBar(false)
-        responseTextView.text = responseText
-        val color = when (responseType) {
-            RESPONSE_SYNC -> resources.getColor(R.color.activity_upcoming_events_sync_text_view_color)
-            RESPONSE_ASYNC -> resources.getColor(R.color.activity_upcoming_events_async_text_view_color)
-            else -> resources.getColor(R.color.activity_upcoming_events_error_text_view_color)
-        }
-        responseTextView.setTextColor(color)
+
+        responseTextView.text = text
+        responseTextView.setTextColor(ContextCompat.getColor(this, color))
     }
 
     private fun showProgressBar(isVisible: Boolean) {
         progressBar.isVisible = isVisible
     }
+
 }
