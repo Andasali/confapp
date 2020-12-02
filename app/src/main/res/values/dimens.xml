@@ -12,6 +12,7 @@
     <dimen name="padding_size_4x">4dp</dimen>
     <dimen name="padding_size_10x">10dp</dimen>
     <dimen name="padding_size_16x">16dp</dimen>
+    <dimen name="padding_size_24x">24dp</dimen>
 
     <dimen name="height_size_16x">16dp</dimen>
     <dimen name="activity_hello_edit_text_height_size">44dp</dimen>
@@ -32,6 +33,9 @@
     <dimen name="bottom_button_radius">45dp</dimen>
 
     <dimen name="acitvity_upcoming_events_progress_bar_margin">220dp</dimen>
+    <dimen name="activity_all_events_recycler_bottom_size">84dp</dimen>
+    <dimen name="activity_hello_toolbar_height">165dp</dimen>
+
     <dimen name="edit_text_padding_size_16x">16dp</dimen>
     <dimen name="edit_text_padding_size_10x">10dp</dimen>
     <dimen name="arrow_icon_size">32dp</dimen>
