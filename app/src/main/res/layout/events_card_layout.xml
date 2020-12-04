@@ -31,12 +31,14 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <ImageView
+    <ToggleButton
         android:id="@+id/events_card_favourite_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_favourite_border"
+        android:layout_width="@dimen/height_size_16x"
+        android:layout_height="@dimen/height_size_16x"
+        android:background="@drawable/toggle_button_favorite"
         app:layout_constraintEnd_toEndOf="parent"
+        android:textOff="@string/empty_string"
+        android:textOn="@string/empty_string"
         app:layout_constraintTop_toTopOf="@id/events_card_date_and_place"
         />
 

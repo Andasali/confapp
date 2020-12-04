@@ -3,11 +3,15 @@ package kz.kolesateam.confapp.events.presentation.view.branchAdapter
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import kz.kolesateam.confapp.R
 import kz.kolesateam.confapp.events.data.models.BranchApiData
 import kz.kolesateam.confapp.events.data.models.EventApiData
 import kz.kolesateam.confapp.events.presentation.view.EventClickListener
+
+const val EVENT_DATE = "%s - %s • %s"
 
 class BranchViewHolder(
     itemView: View,
@@ -25,13 +29,13 @@ class BranchViewHolder(
     private val eventCardAndPlaceCurrent: TextView = currentEventView.findViewById(R.id.events_card_date_and_place)
     private val speakerJobCurrent: TextView = currentEventView.findViewById(R.id.events_card_speaker_job)
     private val eventTitleCurrent: TextView = currentEventView.findViewById(R.id.events_card_event_title)
-    private val favouriteButtonCurrent: ImageView = currentEventView.findViewById(R.id.events_card_favourite_btn)
+    private val favouriteButtonCurrent: ToggleButton = currentEventView.findViewById(R.id.events_card_favourite_btn)
 
     private val speakerNameNext: TextView = nextEventView.findViewById(R.id.events_card_speaker_name)
     private val eventCardAndPlaceNext: TextView = nextEventView.findViewById(R.id.events_card_date_and_place)
     private val speakerJobNext: TextView = nextEventView.findViewById(R.id.events_card_speaker_job)
     private val eventTitleNext: TextView = nextEventView.findViewById(R.id.events_card_event_title)
-    private val favouriteButtonNext: ImageView = nextEventView.findViewById(R.id.events_card_favourite_btn)
+    private val favouriteButtonNext: ToggleButton = nextEventView.findViewById(R.id.events_card_favourite_btn)
 
     fun bind(branchApiData: BranchApiData){
         branchTitle.text = branchApiData.title
@@ -64,7 +68,7 @@ class BranchViewHolder(
         speakerJob: TextView,
         eventTitle: TextView
     ){
-        eventCardAndPlace.text = "%s - %s • %s".format(
+        eventCardAndPlace.text = EVENT_DATE.format(
             event?.startTime?.dropLast(3),
             event?.endTime?.dropLast(3),
             event?.place
@@ -76,23 +80,15 @@ class BranchViewHolder(
 
     private fun initListeners(currentEvent: EventApiData?, nextEvent: EventApiData?){
         branchTitleAndArrow.setOnClickListener {
-            eventClickListener.onBranchClickListener(branchTitle.text.toString())
+            eventClickListener.onBranchClick(branchTitle.text.toString())
         }
 
         currentEventView.setOnClickListener {
-            eventClickListener.onEventClickListener(currentEvent?.title.toString())
+            eventClickListener.onEventClick(currentEvent?.title.toString())
         }
 
         nextEventView.setOnClickListener {
-            eventClickListener.onEventClickListener(nextEvent?.title.toString())
-        }
-
-        favouriteButtonCurrent.setOnClickListener {
-            eventClickListener.onFavouriteButtonClickListener(favouriteButtonCurrent, currentEvent?.id)
-        }
-
-        favouriteButtonNext.setOnClickListener {
-            eventClickListener.onFavouriteButtonClickListener(favouriteButtonNext, nextEvent?.id)
+            eventClickListener.onEventClick(nextEvent?.title.toString())
         }
     }
 }

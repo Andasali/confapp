@@ -41,16 +41,12 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
         eventsRecyclerView.adapter = branchAdapter
     }
 
-    override fun onBranchClickListener(branchTitle: String) {
+    override fun onBranchClick(branchTitle: String) {
         Toast.makeText(this, branchTitle, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onEventClickListener(eventTitle: String) {
+    override fun onEventClick(eventTitle: String) {
         Toast.makeText(this, eventTitle, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onFavouriteButtonClickListener(image: ImageView, eventId: Int?) {
-        image.setImageResource(R.drawable.ic_favourite_fill)
     }
 
     private fun loadData() {

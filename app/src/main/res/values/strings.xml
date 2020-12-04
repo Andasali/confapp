@@ -12,4 +12,5 @@
     <string name="activity_upcoming_events_text_view_default">some json</string>
     <string name="activity_upcoming_events_favourite_btn_text">В избранные</string>
     <string name="event_card_next_report">Следующий доклад</string>
+    <string name="empty_string" />
 </resources>
