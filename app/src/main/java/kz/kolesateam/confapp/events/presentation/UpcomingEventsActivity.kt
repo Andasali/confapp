@@ -1,37 +1,30 @@
 package kz.kolesateam.confapp.events.presentation
 
 import android.os.Bundle
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import kz.kolesateam.confapp.R
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import androidx.recyclerview.widget.RecyclerView
 import kz.kolesateam.confapp.events.data.models.BranchApiData
-import kz.kolesateam.confapp.events.data.ResponseData
 import kz.kolesateam.confapp.events.data.UpcomingEventsRepository
+import kz.kolesateam.confapp.events.data.models.UpcomingEventListItem
+import kz.kolesateam.confapp.events.presentation.view.EventClickListener
+import kz.kolesateam.confapp.events.presentation.view.branchAdapter.BranchAdapter
 
+const val EMPTY_KEY = ""
+const val SHARED_PREFERENCES_KEY = "confapp"
+const val USER_NAME_KEY = "user_name"
 
-const val RESPONSE_TEXT = "RESPONSE_TEXT"
-const val RESPONSE_TEXT_COLOR = "RESPONSE_TEXT_COLOR"
+class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
 
-const val DATA_ASYNC_TEXT_COLOR = R.color.activity_upcoming_events_async_text_view_color
-const val DATA_SYNC_TEXT_COLOR = R.color.activity_upcoming_events_sync_text_view_color
-const val DATA_ERROR_TEXT_COLOR = R.color.activity_upcoming_events_error_text_view_color
-
-class UpcomingEventsActivity : AppCompatActivity() {
-
-    private lateinit var syncButton: Button
-    private lateinit var asyncButton: Button
-    private lateinit var responseTextView: TextView
+    private lateinit var eventsRecyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var upcomingEventsRepository: UpcomingEventsRepository
+
+    private val branchAdapter: BranchAdapter by lazy {
+        BranchAdapter(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,70 +32,59 @@ class UpcomingEventsActivity : AppCompatActivity() {
 
         initViews()
         upcomingEventsRepository = UpcomingEventsRepository()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.run {
-            putString(RESPONSE_TEXT, responseTextView.text.toString())
-            putInt(RESPONSE_TEXT_COLOR, responseTextView.currentTextColor)
-        }
-
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        responseTextView.text = savedInstanceState.getString(RESPONSE_TEXT)
-        responseTextView.setTextColor(savedInstanceState.getInt(RESPONSE_TEXT_COLOR))
+        loadData()
     }
 
     private fun initViews() {
-        syncButton = findViewById(R.id.activity_upcoming_events_button_sync)
-        asyncButton = findViewById(R.id.activity_upcoming_events_button_async)
-        responseTextView = findViewById(R.id.activity_upcoming_events_text_view_json_result)
         progressBar = findViewById(R.id.activity_upcoming_events_progress_bar)
-
-        syncButton.setOnClickListener {
-            loadApiDataSync()
-        }
-
-        asyncButton.setOnClickListener {
-            loadApiDataAsync()
-        }
+        eventsRecyclerView = findViewById(R.id.activity_upcoming_events_recycler_view)
+        eventsRecyclerView.adapter = branchAdapter
     }
 
-    private fun loadApiDataSync() = CoroutineScope(Main).launch {
-        showProgressBar(true)
-
-        val response: ResponseData<List<BranchApiData>, String> = withContext(IO) {
-            upcomingEventsRepository.getUpcomingEventsSync()
-        }
-
-        when (response) {
-            is ResponseData.Success -> showResult(response.result.toString(), DATA_SYNC_TEXT_COLOR)
-            is ResponseData.Error -> showResult(response.error, DATA_ERROR_TEXT_COLOR)
-        }
+    override fun onBranchClick(branchTitle: String) {
+        Toast.makeText(this, branchTitle, Toast.LENGTH_SHORT).show()
     }
 
-    private fun loadApiDataAsync() {
-        showProgressBar(true)
+    override fun onEventClick(eventTitle: String) {
+        Toast.makeText(this, eventTitle, Toast.LENGTH_SHORT).show()
+    }
 
+    private fun loadData() {
+        showProgressBar(true)
         upcomingEventsRepository.getUpcomingEventsAsync(
             result = {
-                showResult(it.toString(), DATA_ASYNC_TEXT_COLOR)
+                fillAdapterList(it)
             },
-            fail = {
-                showResult(it, DATA_ERROR_TEXT_COLOR)
-            }
+            fail = {}
         )
     }
 
-    private fun showResult(text: String?, color: Int) {
-        showProgressBar(false)
+    private fun fillAdapterList(branchList: List<BranchApiData>){
+        val upcomingEventListItemList: MutableList<UpcomingEventListItem> = mutableListOf()
 
-        responseTextView.text = text
-        responseTextView.setTextColor(ContextCompat.getColor(this, color))
+        val headerListItem = UpcomingEventListItem(
+            type = 1,
+            data = getString(R.string.welcome_fmt, getUsername())
+        )
+        val branchListItemList: List<UpcomingEventListItem> = branchList.map { branchApiData ->
+            UpcomingEventListItem(
+                type = 2,
+                data = branchApiData
+            )
+        }
+
+        upcomingEventListItemList.add(headerListItem)
+        upcomingEventListItemList.addAll(branchListItemList)
+        branchAdapter.setList(upcomingEventListItemList)
+
+        showProgressBar(false)
+    }
+
+    private fun getUsername(): String {
+        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE)
+        val username = sharedPreferences.getString(USER_NAME_KEY, EMPTY_KEY)
+
+        return username.toString()
     }
 
     private fun showProgressBar(isVisible: Boolean) {
