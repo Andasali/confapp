@@ -76,6 +76,7 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
     private fun observeLiveData() {
         upcomingEventsViewModel.progressLiveData.observe(this, ::handleProgress)
         upcomingEventsViewModel.loadEventsStateLiveData.observe(this, ::handleResponseEvents)
+        upcomingEventsViewModel.eventScreenNavigationLiveData.observe(this, ::handleNavigation)
     }
 
     private fun handleProgress(progressState: ProgressState) {
