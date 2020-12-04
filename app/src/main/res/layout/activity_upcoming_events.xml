@@ -46,7 +46,7 @@
         android:drawablePadding="@dimen/drawable_padding"
         android:paddingHorizontal="@dimen/layout_spacing_16x"
         android:paddingVertical="@dimen/layout_spacing_10x"
-        android:text="@string/activity_upcoming_events_favourite_btn_text"
+        android:text="@string/favourite_btn_text"
         android:textAllCaps="false"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/button_text_size_medium"

@@ -1,5 +1,6 @@
 package kz.kolesateam.confapp.events.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -7,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import kz.kolesateam.confapp.R
+import kz.kolesateam.confapp.allEvents.presentation.AllEventsActivity
 import kz.kolesateam.confapp.common.data.model.EventScreenNavigation
 import kz.kolesateam.confapp.common.data.model.ProgressState
 import kz.kolesateam.confapp.common.data.model.ResponseData
@@ -90,6 +92,20 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
             }
             is ResponseData.Error -> {
                 errorTextView.text = responseData.error
+            }
+        }
+    }
+
+    private fun handleNavigation(eventScreenNavigation: EventScreenNavigation?) {
+        when (eventScreenNavigation) {
+            is EventScreenNavigation.AllEvents -> {
+                val intent = Intent(this, AllEventsActivity::class.java)
+                intent.apply {
+                    putExtra(INTENT_BRANCH_ID_KEY, eventScreenNavigation.branchId)
+                    putExtra(INTENT_BRANCH_TITLE_KEY, eventScreenNavigation.branchTitle)
+                }
+
+                startActivity(intent)
             }
         }
     }

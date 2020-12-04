@@ -1,6 +1,7 @@
 package kz.kolesateam.confapp
 
 import android.app.Application
+import kz.kolesateam.confapp.allEvents.di.allEventsModule
 import kz.kolesateam.confapp.di.applicationModule
 import kz.kolesateam.confapp.events.di.eventScreenModule
 import org.koin.android.ext.koin.androidContext
@@ -17,7 +18,8 @@ class ConfApp : Application() {
 
             modules (
                 applicationModule,
-                eventScreenModule
+                eventScreenModule,
+                allEventsModule
             )
         }
     }

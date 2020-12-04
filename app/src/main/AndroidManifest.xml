@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".events.presentation.UpcomingEventsActivity" />
+        <activity android:name=".allEvents.presentation.AllEventsActivity"/>
 
     </application>
 
