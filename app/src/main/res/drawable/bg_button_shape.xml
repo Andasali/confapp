@@ -4,12 +4,12 @@
     >
 
     <item
-        android:drawable="@drawable/continue_button_enabled"
+        android:drawable="@drawable/bg_continue_button_enabled"
         android:state_enabled="true"
         />
 
     <item
-        android:drawable="@drawable/continue_button_disabled"
+        android:drawable="@drawable/bg_continue_button_disabled"
         />
 
 </selector>
