@@ -8,7 +8,7 @@ import kz.kolesateam.confapp.allEvents.domain.AllEventsRepository
 import kz.kolesateam.confapp.allEvents.presentation.models.AllEventsListItem
 import kz.kolesateam.confapp.allEvents.presentation.models.BranchTitleItem
 import kz.kolesateam.confapp.allEvents.presentation.models.EventListItem
-import kz.kolesateam.confapp.common.data.model.ProgressState
+import kz.kolesateam.confapp.events.presentation.models.ProgressState
 import kz.kolesateam.confapp.common.data.model.ResponseData
 import kz.kolesateam.confapp.common.data.models.EventApiData
 import kz.kolesateam.confapp.events.presentation.view.DEFAULT_BRANCH_ID

@@ -1,4 +1,4 @@
-package kz.kolesateam.confapp.common.data.model
+package kz.kolesateam.confapp.events.presentation.models
 
 sealed class ProgressState {
     object Loading : ProgressState()

@@ -4,7 +4,7 @@ package kz.kolesateam.confapp.events.presentation.viewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kz.kolesateam.confapp.common.data.model.EventScreenNavigation
-import kz.kolesateam.confapp.common.data.model.ProgressState
+import kz.kolesateam.confapp.events.presentation.models.ProgressState
 import kz.kolesateam.confapp.common.data.model.ResponseData
 import kz.kolesateam.confapp.events.data.models.BranchApiData
 import kz.kolesateam.confapp.events.domain.UpcomingEventsRepository
