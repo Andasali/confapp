@@ -12,6 +12,7 @@ import kz.kolesateam.confapp.allEvents.presentation.AllEventsActivity
 import kz.kolesateam.confapp.common.data.model.EventScreenNavigation
 import kz.kolesateam.confapp.common.data.model.ProgressState
 import kz.kolesateam.confapp.common.data.model.ResponseData
+import kz.kolesateam.confapp.common.data.models.EventApiData
 import kz.kolesateam.confapp.events.presentation.models.UpcomingEventListItem
 import kz.kolesateam.confapp.common.view.EventClickListener
 import kz.kolesateam.confapp.events.presentation.view.BranchAdapter
@@ -62,7 +63,7 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
         showToast(eventTitle)
     }
 
-    override fun onFavouriteButtonClick(image: ImageView, eventId: Int?) {
+    override fun onFavouriteButtonClick(image: ImageView, eventId: Int?, eventData: EventApiData) {
         image.setImageResource(R.drawable.ic_favourite_fill)
     }
 
