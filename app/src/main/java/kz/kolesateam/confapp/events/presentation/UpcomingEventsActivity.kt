@@ -67,7 +67,7 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
         showToast(eventTitle)
     }
 
-    override fun onFavoriteButtonClicked(eventApiData: EventApiData?) {
+    override fun onFavoriteButtonClicked(eventApiData: EventApiData) {
         upcomingEventsViewModel.onFavoriteButtonClick(eventApiData)
     }
 

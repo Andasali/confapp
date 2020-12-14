@@ -21,10 +21,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".events.presentation.UpcomingEventsActivity" />
-        <activity android:name=".allEvents.presentation.AllEventsActivity"/>
-        <activity android:name=".favoriteEvents.presentation.FavoriteEventsActivity"></activity>
-        <activity android:name=".detail.DetailActivity"></activity>
+        <activity android:name=".allEvents.presentation.AllEventsActivity" />
         <activity android:name=".favoriteEvents.presentation.FavoriteEventsActivity" />
+        <activity android:name=".eventDetails.EventDetailsActivity"/>
+        <receiver android:name=".notifications.NotificationAlarmBroadcastReceiver" />
 
     </application>
 

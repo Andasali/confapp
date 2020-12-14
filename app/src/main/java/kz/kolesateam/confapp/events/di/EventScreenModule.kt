@@ -1,3 +1,4 @@
+
 package kz.kolesateam.confapp.events.di
 
 import kz.kolesateam.confapp.di.SHARED_PREFS_DATA_SOURCE
@@ -18,7 +19,8 @@ val eventScreenModule = module {
             upcomingEventsRepository = get(),
             userNameSharedPrefsDataSource = get(named(SHARED_PREFS_DATA_SOURCE)),
             favoriteEventsRepository = get(),
-            eventsMapper = get()
+            eventsMapper = get(),
+            notificationAlarmHelper = get()
         )
     }
 

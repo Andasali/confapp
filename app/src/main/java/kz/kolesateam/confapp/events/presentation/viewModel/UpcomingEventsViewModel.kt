@@ -14,12 +14,14 @@ import kz.kolesateam.confapp.events.presentation.models.HeaderItem
 import kz.kolesateam.confapp.events.presentation.models.UpcomingEventListItem
 import kz.kolesateam.confapp.common.domain.EventsMapper
 import kz.kolesateam.confapp.favoriteEvents.domain.FavoriteEventsRepository
+import kz.kolesateam.confapp.notifications.NotificationAlarmHelper
 
 class UpcomingEventsViewModel(
     private val upcomingEventsRepository: UpcomingEventsRepository,
     private val userNameSharedPrefsDataSource: UserNameDataSource,
     private val favoriteEventsRepository: FavoriteEventsRepository,
-    private val eventsMapper: EventsMapper
+    private val eventsMapper: EventsMapper,
+    private val notificationAlarmHelper: NotificationAlarmHelper
 ) : ViewModel() {
 
     val loadEventsStateLiveData: MutableLiveData<ResponseData<List<UpcomingEventListItem>, String>> = MutableLiveData()
@@ -41,11 +43,29 @@ class UpcomingEventsViewModel(
         )
     }
 
-    fun onFavoriteButtonClick(eventApiData: EventApiData?) {
-        when(eventApiData?.isFavorite){
-            true -> favoriteEventsRepository.removeEvent(eventId = eventApiData.id)
-            else -> favoriteEventsRepository.saveEvent(event = eventApiData)
+    fun onFavoriteButtonClick(eventApiData: EventApiData) {
+        when(eventApiData.isFavorite){
+            true -> {
+                favoriteEventsRepository.removeEvent(eventId = eventApiData.id)
+                cancelEvent(eventApiData)
+            }
+            else -> {
+                favoriteEventsRepository.saveEvent(event = eventApiData)
+                scheduleEvent(eventApiData)
+            }
         }
+    }
+
+    private fun scheduleEvent(eventApiData: EventApiData){
+        notificationAlarmHelper.createNotificationAlarm(
+            eventApiData = eventApiData
+        )
+    }
+
+    private fun cancelEvent(eventApiData: EventApiData) {
+        notificationAlarmHelper.cancelNotificationAlarm(
+            eventApiData = eventApiData
+        )
     }
 
     fun onBranchClickListener(eventScreenNavigation: EventScreenNavigation) {

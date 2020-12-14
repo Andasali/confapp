@@ -6,6 +6,7 @@ import kz.kolesateam.confapp.common.data.DefaultEventsMapper
 import kz.kolesateam.confapp.common.domain.EventsMapper
 import kz.kolesateam.confapp.events.data.UserNameSharedPrefsDataSource
 import kz.kolesateam.confapp.events.domain.UserNameDataSource
+import kz.kolesateam.confapp.notifications.NotificationAlarmHelper
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -40,6 +41,12 @@ val applicationModule = module {
         DefaultEventsMapper(
             favoriteEventsRepository = get()
         ) as EventsMapper
+    }
+
+    single {
+        NotificationAlarmHelper(
+            application = androidApplication()
+        )
     }
 
     factory(named(SHARED_PREFS_DATA_SOURCE)) {

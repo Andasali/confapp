@@ -41,7 +41,7 @@ class FavoriteEventsActivity : AppCompatActivity(), EventClickListener {
         favoriteEventsViewModel.onStart()
     }
 
-    override fun onFavoriteButtonClicked(eventApiData: EventApiData?) {
+    override fun onFavoriteButtonClicked(eventApiData: EventApiData) {
         favoriteEventsViewModel.onFavoriteButtonClick(eventApiData)
     }
 
