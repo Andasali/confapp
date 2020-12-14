@@ -8,3 +8,4 @@ interface EventsMapper {
 
     fun isCompletedEvent(eventTime: String?): Boolean
 }
+
