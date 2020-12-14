@@ -12,7 +12,9 @@ val allEventsModule = module {
 
     viewModel {
         AllEventsViewModel(
-            allEventsRepository = get()
+            allEventsRepository = get(),
+            favoriteEventsRepository = get(),
+            eventsMapper = get()
         )
     }
 

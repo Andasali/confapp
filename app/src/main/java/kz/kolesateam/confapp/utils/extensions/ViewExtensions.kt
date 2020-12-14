@@ -1,5 +1,5 @@
 
-package kz.kolesateam.confapp.utils
+package kz.kolesateam.confapp.utils.extensions
 
 import android.view.View
 

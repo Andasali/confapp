@@ -18,9 +18,10 @@ import kz.kolesateam.confapp.common.view.EventClickListener
 import kz.kolesateam.confapp.events.data.EMPTY_KEY
 import kz.kolesateam.confapp.events.presentation.INTENT_BRANCH_ID_KEY
 import kz.kolesateam.confapp.events.presentation.INTENT_BRANCH_TITLE_KEY
-import kz.kolesateam.confapp.utils.hide
-import kz.kolesateam.confapp.utils.show
-import kz.kolesateam.confapp.utils.showToast
+import kz.kolesateam.confapp.utils.extensions.hide
+import kz.kolesateam.confapp.utils.extensions.show
+import kz.kolesateam.confapp.utils.extensions.showToast
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val DEFAULT_INTENT_EXTRA_VALUE = 0
@@ -28,6 +29,7 @@ const val DEFAULT_INTENT_EXTRA_VALUE = 0
 class AllEventsActivity : AppCompatActivity(), EventClickListener {
 
     private val allEventsViewModel: AllEventsViewModel by viewModel()
+    private val favoriteEventsRouter: FavoriteEventsRouter by inject()
 
     private val allEventsAdapter: AllEventsAdapter by lazy {
         AllEventsAdapter(eventClickListener = this)
@@ -77,7 +79,7 @@ class AllEventsActivity : AppCompatActivity(), EventClickListener {
 
         favoritesButton = findViewById(R.id.activity_all_favorites_button)
         favoritesButton.setOnClickListener {
-            showToast(getString(R.string.favourite_btn_text))
+            startActivity(favoriteEventsRouter.createIntent(this))
         }
     }
 

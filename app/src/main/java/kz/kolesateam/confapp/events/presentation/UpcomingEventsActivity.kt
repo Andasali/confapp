@@ -2,7 +2,7 @@ package kz.kolesateam.confapp.events.presentation
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -17,9 +17,11 @@ import kz.kolesateam.confapp.events.presentation.models.UpcomingEventListItem
 import kz.kolesateam.confapp.common.view.EventClickListener
 import kz.kolesateam.confapp.events.presentation.view.BranchAdapter
 import kz.kolesateam.confapp.events.presentation.viewModel.UpcomingEventsViewModel
-import kz.kolesateam.confapp.utils.hide
-import kz.kolesateam.confapp.utils.show
-import kz.kolesateam.confapp.utils.showToast
+import kz.kolesateam.confapp.favoriteEvents.presentation.FavoriteEventsRouter
+import kz.kolesateam.confapp.utils.extensions.hide
+import kz.kolesateam.confapp.utils.extensions.show
+import kz.kolesateam.confapp.utils.extensions.showToast
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val INTENT_BRANCH_ID_KEY = "branch_id"
@@ -28,6 +30,7 @@ const val INTENT_BRANCH_TITLE_KEY = "branch_title"
 class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
 
     private val upcomingEventsViewModel: UpcomingEventsViewModel by viewModel()
+    private val favoriteEventsRouter: FavoriteEventsRouter by inject()
 
     private val branchAdapter: BranchAdapter by lazy {
         BranchAdapter(eventClickListener = this)
@@ -36,6 +39,7 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
     private lateinit var eventsRecyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var errorTextView: TextView
+    private lateinit var favoritesButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +54,7 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
         upcomingEventsViewModel.onStart()
     }
 
-    override fun onBranchClick(branchId: Int, branchTitle: String) {
+    override fun onBranchClicked(branchId: Int, branchTitle: String) {
         upcomingEventsViewModel.onBranchClickListener(
             EventScreenNavigation.AllEvents(
                 branchId = branchId,
@@ -59,12 +63,12 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
         )
     }
 
-    override fun onEventClick(eventTitle: String) {
+    override fun onEventClicked(eventTitle: String) {
         showToast(eventTitle)
     }
 
-    override fun onFavouriteButtonClick(image: ImageView, eventId: Int?, eventData: EventApiData) {
-        image.setImageResource(R.drawable.ic_favourite_fill)
+    override fun onFavoriteButtonClicked(eventApiData: EventApiData?) {
+        upcomingEventsViewModel.onFavoriteButtonClick(eventApiData)
     }
 
     private fun initViews() {
@@ -72,6 +76,11 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
         errorTextView = findViewById(R.id.activity_upcoming_events_error)
         eventsRecyclerView = findViewById(R.id.activity_upcoming_events_recycler_view)
         eventsRecyclerView.adapter = branchAdapter
+
+        favoritesButton = findViewById(R.id.activity_upcoming_events_favorites_button)
+        favoritesButton.setOnClickListener {
+            startActivity(favoriteEventsRouter.createIntent(this))
+        }
     }
 
     private fun observeLiveData() {

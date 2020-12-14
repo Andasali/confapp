@@ -14,6 +14,5 @@ data class BranchTitleItem(
 ) : AllEventsListItem(BRANCH_TITLE_TYPE)
 
 data class EventListItem(
-    val data: EventApiData,
-    val isCompleted: Boolean
+    val data: EventApiData
 ) : AllEventsListItem(EVENT_TYPE)

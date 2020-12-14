@@ -39,7 +39,6 @@
         <item name="android:layout_height">@dimen/activity_hello_toolbar_height</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@drawable/toolbar_title</item>
-        <item name="navigationIcon">@drawable/ic_arrow_bold</item>
     </style>
 
     <style name="FailLoadingTheme">
