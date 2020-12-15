@@ -2,8 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_size_10x"
     android:background="@drawable/bg_events_card"
     android:paddingHorizontal="@dimen/padding_size_16x"
     android:paddingBottom="@dimen/padding_size_10x"
@@ -14,10 +16,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_event_state"
+        android:paddingHorizontal="@dimen/padding_size_4x"
         android:text="@string/event_card_next_report"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_13x"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/events_card_layout_completed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_event_completed"
         android:paddingHorizontal="@dimen/padding_size_4x"
+        android:text="@string/event_card_state_completed"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_13x"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -29,16 +46,15 @@
         android:layout_marginTop="@dimen/margin_size_20x"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:text="time and place"
         />
 
-    <ToggleButton
+    <ImageView
         android:id="@+id/events_card_favourite_btn"
-        android:layout_width="@dimen/height_size_16x"
-        android:layout_height="@dimen/height_size_16x"
-        android:background="@drawable/toggle_button_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_favourite_border"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textOff="@string/empty_string"
-        android:textOn="@string/empty_string"
         app:layout_constraintTop_toTopOf="@id/events_card_date_and_place"
         />
 
@@ -52,6 +68,7 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/events_card_date_and_place"
         app:layout_constraintTop_toBottomOf="@id/events_card_date_and_place"
+        tools:text="Speaker name"
         />
 
     <TextView
@@ -63,6 +80,7 @@
         android:textSize="@dimen/text_size_13x"
         app:layout_constraintStart_toStartOf="@id/events_card_date_and_place"
         app:layout_constraintTop_toBottomOf="@id/events_card_speaker_name"
+        tools:text="Speaker job"
         />
 
     <TextView
@@ -76,5 +94,6 @@
         android:textColor="@color/text_primary_dark"
         app:layout_constraintStart_toStartOf="@id/events_card_date_and_place"
         app:layout_constraintTop_toBottomOf="@id/events_card_speaker_job"
+        tools:text="Event Title"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

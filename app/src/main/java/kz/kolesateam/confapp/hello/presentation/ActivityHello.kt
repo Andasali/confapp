@@ -1,63 +1,46 @@
 package kz.kolesateam.confapp.hello.presentation
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
 import kz.kolesateam.confapp.R
+import kz.kolesateam.confapp.common.AbstractTextWatcher
+import kz.kolesateam.confapp.events.domain.UserNameDataSource
 import kz.kolesateam.confapp.events.presentation.UpcomingEventsActivity
-
-const val SHARED_PREFERENCES_KEY = "confapp"
-const val USER_NAME_KEY = "user_name"
+import org.koin.android.ext.android.inject
 
 class HelloActivity : AppCompatActivity() {
-    private val openTestHelloButton: Button by lazy {
-        findViewById(R.id.activity_hello_continue_button)
-    }
+
+    private val userNameSharedPrefsDataSource: UserNameDataSource by inject()
+
+    private lateinit var editText: EditText
+    private lateinit var continueButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_hello)
 
-        val nameEditText: EditText = findViewById(R.id.activity_hello_editText_name)
+        initViews()
+    }
 
-        openTestHelloButton.setOnClickListener {
-            saveUserName(nameEditText.text.toString())
-            navigateToUpcomingEventsScreen()
-        }
+    private fun initViews(){
+        editText = findViewById(R.id.activity_hello_editText_name)
+        continueButton = findViewById(R.id.activity_hello_continue_button)
 
-        nameEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(str: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
-
-            override fun onTextChanged(str: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
-
-            override fun afterTextChanged(str: Editable?) {
-                val isInputEmpty: Boolean = str.toString().isBlank()
-                openTestHelloButton.isEnabled = !isInputEmpty
+        editText.addTextChangedListener(object: AbstractTextWatcher() {
+            override fun afterTextChanged(s: Editable?) {
+                continueButton.isEnabled = s.toString().isNotBlank()
             }
         })
+
+        continueButton.setOnClickListener {
+            saveName(editText.text.toString())
+            startActivity(Intent(this, UpcomingEventsActivity::class.java))
+        }
     }
 
-    private fun saveUserName(userName: String) {
-        val sharedPreferences: SharedPreferences = getSharedPreferences(
-            SHARED_PREFERENCES_KEY,
-            Context.MODE_PRIVATE
-        )
-
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-
-        editor.putString(USER_NAME_KEY, userName)
-        editor.apply()
-    }
-
-    private fun navigateToUpcomingEventsScreen() {
-        val upcomingEventsScreen = Intent(this, UpcomingEventsActivity::class.java)
-        startActivity(upcomingEventsScreen)
-    }
+    private fun saveName(name: String) = userNameSharedPrefsDataSource.saveUserName(name)
 }

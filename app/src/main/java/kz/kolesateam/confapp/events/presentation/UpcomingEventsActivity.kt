@@ -1,94 +1,113 @@
 package kz.kolesateam.confapp.events.presentation
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.*
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import kz.kolesateam.confapp.R
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import kz.kolesateam.confapp.events.data.models.BranchApiData
-import kz.kolesateam.confapp.events.data.UpcomingEventsRepository
-import kz.kolesateam.confapp.events.data.models.UpcomingEventListItem
-import kz.kolesateam.confapp.events.presentation.view.EventClickListener
-import kz.kolesateam.confapp.events.presentation.view.branchAdapter.BranchAdapter
+import kz.kolesateam.confapp.R
+import kz.kolesateam.confapp.allEvents.presentation.AllEventsActivity
+import kz.kolesateam.confapp.common.data.model.EventScreenNavigation
+import kz.kolesateam.confapp.common.data.model.ResponseData
+import kz.kolesateam.confapp.events.presentation.models.UpcomingEventListItem
+import kz.kolesateam.confapp.common.view.EventClickListener
+import kz.kolesateam.confapp.events.presentation.models.ProgressState
+import kz.kolesateam.confapp.events.presentation.view.BranchAdapter
+import kz.kolesateam.confapp.events.presentation.viewModel.UpcomingEventsViewModel
+import kz.kolesateam.confapp.utils.hide
+import kz.kolesateam.confapp.utils.show
+import kz.kolesateam.confapp.utils.showToast
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-const val EMPTY_KEY = ""
-const val SHARED_PREFERENCES_KEY = "confapp"
-const val USER_NAME_KEY = "user_name"
+const val INTENT_BRANCH_ID_KEY = "branch_id"
+const val INTENT_BRANCH_TITLE_KEY = "branch_title"
 
 class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
 
-    private lateinit var eventsRecyclerView: RecyclerView
-    private lateinit var progressBar: ProgressBar
-    private lateinit var upcomingEventsRepository: UpcomingEventsRepository
+    private val upcomingEventsViewModel: UpcomingEventsViewModel by viewModel()
 
     private val branchAdapter: BranchAdapter by lazy {
-        BranchAdapter(this)
+        BranchAdapter(eventClickListener = this)
     }
+
+    private lateinit var eventsRecyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var errorTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upcoming_events)
 
         initViews()
-        upcomingEventsRepository = UpcomingEventsRepository()
-        loadData()
+        observeLiveData()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        upcomingEventsViewModel.onStart()
+    }
+
+    override fun onBranchClick(branchId: Int, branchTitle: String) {
+        upcomingEventsViewModel.onBranchClickListener(
+            EventScreenNavigation.AllEvents(
+                branchId = branchId,
+                branchTitle = branchTitle
+            )
+        )
+    }
+
+    override fun onEventClick(eventTitle: String) {
+        showToast(eventTitle)
+    }
+
+    override fun onFavouriteButtonClick(image: ImageView, eventId: Int?) {
+        image.setImageResource(R.drawable.ic_favourite_fill)
     }
 
     private fun initViews() {
         progressBar = findViewById(R.id.activity_upcoming_events_progress_bar)
+        errorTextView = findViewById(R.id.activity_upcoming_events_error)
         eventsRecyclerView = findViewById(R.id.activity_upcoming_events_recycler_view)
         eventsRecyclerView.adapter = branchAdapter
     }
 
-    override fun onBranchClick(branchTitle: String) {
-        Toast.makeText(this, branchTitle, Toast.LENGTH_SHORT).show()
+    private fun observeLiveData() {
+        upcomingEventsViewModel.progressLiveData.observe(this, ::handleProgress)
+        upcomingEventsViewModel.loadEventsStateLiveData.observe(this, ::handleResponseEvents)
+        upcomingEventsViewModel.eventScreenNavigationLiveData.observe(this, ::handleNavigation)
     }
 
-    override fun onEventClick(eventTitle: String) {
-        Toast.makeText(this, eventTitle, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun loadData() {
-        showProgressBar(true)
-        upcomingEventsRepository.getUpcomingEventsAsync(
-            result = {
-                fillAdapterList(it)
-            },
-            fail = {}
-        )
-    }
-
-    private fun fillAdapterList(branchList: List<BranchApiData>){
-        val upcomingEventListItemList: MutableList<UpcomingEventListItem> = mutableListOf()
-
-        val headerListItem = UpcomingEventListItem(
-            type = 1,
-            data = getString(R.string.welcome_fmt, getUsername())
-        )
-        val branchListItemList: List<UpcomingEventListItem> = branchList.map { branchApiData ->
-            UpcomingEventListItem(
-                type = 2,
-                data = branchApiData
-            )
+    private fun handleProgress(progressState: ProgressState) {
+        when (progressState) {
+            ProgressState.Loading -> progressBar.show()
+            ProgressState.Done -> progressBar.hide()
         }
-
-        upcomingEventListItemList.add(headerListItem)
-        upcomingEventListItemList.addAll(branchListItemList)
-        branchAdapter.setList(upcomingEventListItemList)
-
-        showProgressBar(false)
     }
 
-    private fun getUsername(): String {
-        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE)
-        val username = sharedPreferences.getString(USER_NAME_KEY, EMPTY_KEY)
-
-        return username.toString()
+    private fun handleResponseEvents(responseData: ResponseData<List<UpcomingEventListItem>, String>) {
+        when (responseData) {
+            is ResponseData.Success -> {
+                branchAdapter.setList(responseData.result)
+            }
+            is ResponseData.Error -> {
+                errorTextView.text = responseData.error
+            }
+        }
     }
 
-    private fun showProgressBar(isVisible: Boolean) {
-        progressBar.isVisible = isVisible
-    }
+    private fun handleNavigation(eventScreenNavigation: EventScreenNavigation?) {
+        when (eventScreenNavigation) {
+            is EventScreenNavigation.AllEvents -> {
+                val intent = Intent(this, AllEventsActivity::class.java)
+                intent.apply {
+                    putExtra(INTENT_BRANCH_ID_KEY, eventScreenNavigation.branchId)
+                    putExtra(INTENT_BRANCH_TITLE_KEY, eventScreenNavigation.branchTitle)
+                }
 
+                startActivity(intent)
+            }
+        }
+    }
 }

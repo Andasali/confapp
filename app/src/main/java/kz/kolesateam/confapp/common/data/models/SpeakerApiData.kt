@@ -1,10 +1,11 @@
-package kz.kolesateam.confapp.events.data.models
+
+package kz.kolesateam.confapp.common.data.models
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class SpeakerApiData (
+data class SpeakerApiData(
     @JsonProperty("id")
     val id: Int?,
     @JsonProperty("fullName")
