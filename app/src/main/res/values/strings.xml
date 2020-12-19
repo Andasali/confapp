@@ -12,4 +12,6 @@
     <string name="activity_upcoming_events_text_view_default">some json</string>
     <string name="event_card_next_report">Следующий доклад</string>
     <string name="event_card_state_completed">Завершен</string>
+    <string name="favorite_events_button_text">На главную</string>
+    <string name="favorite_events_no_text">Здесь пока тихо</string>
 </resources>

@@ -1,4 +1,4 @@
-package kz.kolesateam.confapp.utils
+package kz.kolesateam.confapp.utils.extensions
 
 import android.content.Context
 import android.widget.Toast

@@ -1,24 +1,31 @@
+
 package kz.kolesateam.confapp.events.di
 
-import kz.kolesateam.confapp.common.data.model.RetrofitClient
+import kz.kolesateam.confapp.di.SHARED_PREFS_DATA_SOURCE
 import kz.kolesateam.confapp.events.data.DefaultUpcomingEventsRepository
 import kz.kolesateam.confapp.events.data.UpcomingEventsDataSource
 import kz.kolesateam.confapp.events.domain.UpcomingEventsRepository
+import kz.kolesateam.confapp.events.presentation.UpcomingEventsRouter
 import kz.kolesateam.confapp.events.presentation.viewModel.UpcomingEventsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import retrofit2.Retrofit
 
 val eventScreenModule = module {
 
     viewModel {
         UpcomingEventsViewModel(
             upcomingEventsRepository = get(),
-            userNameSharedPrefsDataSource = get()
+            userNameSharedPrefsDataSource = get(named(SHARED_PREFS_DATA_SOURCE)),
+            favoriteEventsRepository = get(),
+            eventsMapper = get(),
+            notificationAlarmHelper = get()
         )
     }
 
     single {
-        val retrofit = RetrofitClient.instance
+        val retrofit = get<Retrofit>()
 
         retrofit.create(UpcomingEventsDataSource::class.java)
     }
@@ -27,5 +34,9 @@ val eventScreenModule = module {
         DefaultUpcomingEventsRepository(
             upcomingEventsDataSource = get()
         ) as UpcomingEventsRepository
+    }
+
+    factory {
+        UpcomingEventsRouter()
     }
 }

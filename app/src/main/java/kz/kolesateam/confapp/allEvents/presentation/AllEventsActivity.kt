@@ -2,7 +2,6 @@ package kz.kolesateam.confapp.allEvents.presentation
 
 import android.os.Bundle
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -14,13 +13,16 @@ import kz.kolesateam.confapp.allEvents.presentation.view.AllEventsAdapter
 import kz.kolesateam.confapp.allEvents.presentation.viewModel.AllEventsViewModel
 import kz.kolesateam.confapp.events.presentation.models.ProgressState
 import kz.kolesateam.confapp.common.data.model.ResponseData
+import kz.kolesateam.confapp.common.data.models.EventApiData
 import kz.kolesateam.confapp.common.view.EventClickListener
 import kz.kolesateam.confapp.events.data.EMPTY_KEY
 import kz.kolesateam.confapp.events.presentation.INTENT_BRANCH_ID_KEY
 import kz.kolesateam.confapp.events.presentation.INTENT_BRANCH_TITLE_KEY
-import kz.kolesateam.confapp.utils.hide
-import kz.kolesateam.confapp.utils.show
-import kz.kolesateam.confapp.utils.showToast
+import kz.kolesateam.confapp.favoriteEvents.presentation.FavoriteEventsRouter
+import kz.kolesateam.confapp.utils.extensions.hide
+import kz.kolesateam.confapp.utils.extensions.show
+import kz.kolesateam.confapp.utils.extensions.showToast
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val DEFAULT_INTENT_EXTRA_VALUE = 0
@@ -28,6 +30,7 @@ const val DEFAULT_INTENT_EXTRA_VALUE = 0
 class AllEventsActivity : AppCompatActivity(), EventClickListener {
 
     private val allEventsViewModel: AllEventsViewModel by viewModel()
+    private val favoriteEventsRouter: FavoriteEventsRouter by inject()
 
     private val allEventsAdapter: AllEventsAdapter by lazy {
         AllEventsAdapter(eventClickListener = this)
@@ -56,12 +59,12 @@ class AllEventsActivity : AppCompatActivity(), EventClickListener {
         )
     }
 
-    override fun onEventClick(eventTitle: String) {
+    override fun onEventClicked(eventTitle: String) {
         showToast(eventTitle)
     }
 
-    override fun onFavouriteButtonClick(image: ImageView, eventId: Int?) {
-        image.setImageResource(R.drawable.ic_favourite_fill)
+    override fun onFavoriteButtonClicked(eventApiData: EventApiData) {
+        allEventsViewModel.onFavoriteButtonClick(eventApiData)
     }
 
     private fun initViews() {
@@ -77,24 +80,24 @@ class AllEventsActivity : AppCompatActivity(), EventClickListener {
 
         favoritesButton = findViewById(R.id.activity_all_favorites_button)
         favoritesButton.setOnClickListener {
-            showToast(getString(R.string.favourite_btn_text))
+            startActivity(favoriteEventsRouter.createIntent(this))
         }
     }
 
-    private fun observeLiveData() {
+    private fun observeLiveData(){
         allEventsViewModel.progressLiveData.observe(this, ::handleProgress)
-        allEventsViewModel.loadAllEventsLiveData.observe(this, ::handleResponseAllEvents)
+        allEventsViewModel.allEventsLiveData.observe(this, ::handleResponseAllEvents)
     }
 
     private fun handleProgress(progressState: ProgressState) {
-        when (progressState) {
+        when(progressState){
             ProgressState.Loading -> progressBar.show()
             ProgressState.Done -> progressBar.hide()
         }
     }
 
     private fun handleResponseAllEvents(responseData: ResponseData<List<AllEventsListItem>, String>) {
-        when (responseData) {
+        when(responseData){
             is ResponseData.Success -> allEventsAdapter.setList(responseData.result)
             is ResponseData.Error -> errorTextView.text = responseData.error
         }

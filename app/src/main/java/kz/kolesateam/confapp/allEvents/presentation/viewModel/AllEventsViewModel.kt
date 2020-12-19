@@ -13,17 +13,16 @@ import kz.kolesateam.confapp.common.data.model.ResponseData
 import kz.kolesateam.confapp.common.data.models.EventApiData
 import kz.kolesateam.confapp.events.presentation.view.DEFAULT_BRANCH_ID
 import kz.kolesateam.confapp.events.presentation.view.DEFAULT_BRANCH_TITLE
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.Date
-
-const val TIME_FORMAT = "HH:mm:ss"
+import kz.kolesateam.confapp.common.domain.EventsMapper
+import kz.kolesateam.confapp.favoriteEvents.domain.FavoriteEventsRepository
 
 class AllEventsViewModel(
-    private val allEventsRepository: AllEventsRepository
+    private val allEventsRepository: AllEventsRepository,
+    private val favoriteEventsRepository: FavoriteEventsRepository,
+    private val eventsMapper: EventsMapper
 ) : ViewModel() {
 
-    val loadAllEventsLiveData: MutableLiveData<ResponseData<List<AllEventsListItem>, String>> = MutableLiveData()
+    val allEventsLiveData: MutableLiveData<ResponseData<List<AllEventsListItem>, String>> = MutableLiveData()
     val progressLiveData: MutableLiveData<ProgressState> = MutableLiveData()
 
     private val branchIdLiveData: MutableLiveData<Int> = MutableLiveData()
@@ -36,20 +35,34 @@ class AllEventsViewModel(
         getAllEvents()
     }
 
+    fun onFavoriteButtonClick(eventApiData: EventApiData?) {
+        when (eventApiData?.isFavorite) {
+            true -> favoriteEventsRepository.removeEvent(eventId = eventApiData.id)
+            else -> favoriteEventsRepository.saveEvent(event = eventApiData)
+        }
+    }
+
     private fun getAllEvents() = viewModelScope.launch {
         progressLiveData.value = ProgressState.Loading
 
         allEventsRepository.getAllEvents(
             result = {
-                loadAllEventsLiveData.value = ResponseData.Success(prepareAllEvents(it))
+                setFavoriteEvents(events = it)
+                checkEventsTime(events = it)
+
+                allEventsLiveData.value = ResponseData.Success(prepareAllEvents(it))
             },
             fail = {
-                loadAllEventsLiveData.value = ResponseData.Error(it.toString())
+                allEventsLiveData.value = ResponseData.Error(it.toString())
             },
             branchId = branchIdLiveData.value ?: DEFAULT_BRANCH_ID
         )
 
         progressLiveData.value = ProgressState.Done
+    }
+
+    private fun setFavoriteEvents(events: List<EventApiData>) = events.forEach { event ->
+        event.isFavorite = eventsMapper.isFavoriteEvent(event)
     }
 
     private fun prepareAllEvents(
@@ -62,22 +75,11 @@ class AllEventsViewModel(
         )
     }
 
-    private fun getEventsItem(eventsList: List<EventApiData>): List<AllEventsListItem> = eventsList.map {
-        EventListItem(
-            data = it,
-            isCompleted = checkEventTime(it.endTime)
-        )
+    private fun getEventsItem(events: List<EventApiData>): List<AllEventsListItem> = events.map {
+        EventListItem(data = it)
     }
 
-    private fun checkEventTime(eventTime: String?): Boolean {
-        val simpleDateFormat = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
-        val currentTime: Date = simpleDateFormat.parse(simpleDateFormat.format(Date())) ?: Date()
-        val eventEndTime: Date = simpleDateFormat.parse(eventTime) ?: Date()
-
-        if(currentTime.after(eventEndTime)){
-            return true
-        }
-
-        return false
+    private fun checkEventsTime(events: List<EventApiData>) = events.forEach {
+        it.isCompleted = eventsMapper.isCompletedEvent(eventTime = it.endTime)
     }
 }

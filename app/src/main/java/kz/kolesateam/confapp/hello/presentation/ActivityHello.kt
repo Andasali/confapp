@@ -8,13 +8,15 @@ import android.widget.Button
 import android.widget.EditText
 import kz.kolesateam.confapp.R
 import kz.kolesateam.confapp.common.AbstractTextWatcher
+import kz.kolesateam.confapp.di.SHARED_PREFS_DATA_SOURCE
 import kz.kolesateam.confapp.events.domain.UserNameDataSource
 import kz.kolesateam.confapp.events.presentation.UpcomingEventsActivity
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 class HelloActivity : AppCompatActivity() {
 
-    private val userNameSharedPrefsDataSource: UserNameDataSource by inject()
+    private val userNameSharedPrefsDataSource: UserNameDataSource by inject(named(SHARED_PREFS_DATA_SOURCE))
 
     private lateinit var editText: EditText
     private lateinit var continueButton: Button
