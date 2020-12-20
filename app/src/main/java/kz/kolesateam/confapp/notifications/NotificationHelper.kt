@@ -10,7 +10,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import kz.kolesateam.confapp.R
-import kz.kolesateam.confapp.eventDetails.EventDetailsRouter
+import kz.kolesateam.confapp.eventDetails.presentation.EventDetailsRouter
 
 const val FAVORITE_NOTIFICATION_CHANNEL = "favorite_notification_channel"
 const val NOTIFICATION_EVENT_TITLE_KEY = "notification_event_title"

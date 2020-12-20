@@ -1,6 +1,6 @@
 package kz.kolesateam.confapp.common.view
 
-import kz.kolesateam.confapp.common.data.models.EventApiData
+import kz.kolesateam.confapp.common.domain.models.EventData
 
 interface EventClickListener {
 
@@ -9,7 +9,7 @@ interface EventClickListener {
         branchTitle: String
     ) = Unit
 
-    fun onEventClicked(eventTitle: String) = Unit
+    fun onEventClicked(eventId: Int) = Unit
 
-    fun onFavoriteButtonClicked(eventApiData: EventApiData) = Unit
+    fun onFavoriteButtonClicked(eventData: EventData) = Unit
 }

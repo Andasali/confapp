@@ -23,7 +23,7 @@
         <activity android:name=".events.presentation.UpcomingEventsActivity" />
         <activity android:name=".allEvents.presentation.AllEventsActivity" />
         <activity android:name=".favoriteEvents.presentation.FavoriteEventsActivity" />
-        <activity android:name=".eventDetails.EventDetailsActivity"/>
+        <activity android:name=".eventDetails.presentation.EventDetailsActivity"/>
         <receiver android:name=".notifications.NotificationAlarmBroadcastReceiver" />
 
     </application>

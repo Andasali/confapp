@@ -5,4 +5,10 @@ sealed class EventScreenNavigation {
         val branchId: Int,
         val branchTitle: String
     ) : EventScreenNavigation()
+
+    data class EventDetails(
+        val eventId: Int
+    ) : EventScreenNavigation()
+
+    object FavoriteEvents: EventScreenNavigation()
 }
