@@ -11,13 +11,13 @@ import kz.kolesateam.confapp.R
 import kz.kolesateam.confapp.allEvents.presentation.models.AllEventsListItem
 import kz.kolesateam.confapp.allEvents.presentation.view.AllEventsAdapter
 import kz.kolesateam.confapp.allEvents.presentation.viewModel.AllEventsViewModel
+import kz.kolesateam.confapp.common.data.EMPTY_KEY
 import kz.kolesateam.confapp.common.data.model.EventScreenNavigation
 import kz.kolesateam.confapp.common.data.model.ProgressState
 import kz.kolesateam.confapp.common.data.model.ResponseData
 import kz.kolesateam.confapp.common.domain.models.EventData
 import kz.kolesateam.confapp.common.view.EventClickListener
 import kz.kolesateam.confapp.eventDetails.presentation.EventDetailsRouter
-import kz.kolesateam.confapp.events.data.EMPTY_KEY
 import kz.kolesateam.confapp.favoriteEvents.presentation.FavoriteEventsRouter
 import kz.kolesateam.confapp.utils.extensions.hide
 import kz.kolesateam.confapp.utils.extensions.show
