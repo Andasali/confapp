@@ -14,4 +14,7 @@
     <string name="event_card_state_completed">Завершен</string>
     <string name="favorite_events_button_text">На главную</string>
     <string name="favorite_events_no_text">Здесь пока тихо</string>
+    <string name="event_card_state_next_report">Следующий доклад</string>
+    <string name="toolbar_menu_item_favorite">Favorite</string>
+    <string name="event_details_invited_speaker">Приглашённый спикер</string>
 </resources>

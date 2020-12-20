@@ -11,6 +11,7 @@
     <dimen name="margin_size_24x">24dp</dimen>
 
     <dimen name="padding_size_4x">4dp</dimen>
+    <dimen name="padding_size_8x">8dp</dimen>
     <dimen name="padding_size_10x">10dp</dimen>
     <dimen name="padding_size_16x">16dp</dimen>
     <dimen name="padding_size_24x">24dp</dimen>

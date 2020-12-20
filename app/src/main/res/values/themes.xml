@@ -47,4 +47,15 @@
         <item name="android:textColor">@color/event_completed_color</item>
         <item name="android:textSize">@dimen/text_size_16x</item>
     </style>
+
+    <style name="EventStateTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:paddingStart">@dimen/padding_size_4x</item>
+        <item name="android:paddingEnd">@dimen/padding_size_4x</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_size_13x</item>
+        <item name="android:visibility">gone</item>
+    </style>
 </resources>

@@ -13,28 +13,17 @@
 
     <TextView
         android:id="@+id/events_card_layout_next_report"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_event_state"
-        android:paddingHorizontal="@dimen/padding_size_4x"
-        android:text="@string/event_card_next_report"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_13x"
-        android:visibility="gone"
+        style="@style/EventStateTheme"
+        android:text="@string/event_card_state_next_report"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
 
     <TextView
         android:id="@+id/events_card_layout_completed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/EventStateTheme"
         android:background="@drawable/bg_event_completed"
-        android:paddingHorizontal="@dimen/padding_size_4x"
         android:text="@string/event_card_state_completed"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_13x"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -53,9 +42,12 @@
         android:id="@+id/events_card_favourite_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/padding_size_8x"
+        android:paddingHorizontal="@dimen/padding_size_8x"
         android:src="@drawable/ic_favourite_border"
+        android:layout_marginTop="@dimen/margin_size_16x"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/events_card_date_and_place"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <TextView
