@@ -1,4 +1,4 @@
-package kz.kolesateam.confapp.event_details.presentation
+package kz.kolesateam.confapp.eventDetails.presentation
 
 import android.os.Bundle
 import android.view.Menu
@@ -13,8 +13,8 @@ import kz.kolesateam.confapp.R
 import kz.kolesateam.confapp.common.data.model.ProgressState
 import kz.kolesateam.confapp.common.data.model.ResponseData
 import kz.kolesateam.confapp.common.domain.models.EventData
-import kz.kolesateam.confapp.event_details.domain.ImageLoader
-import kz.kolesateam.confapp.event_details.presentation.viewModel.EventDetailsViewModel
+import kz.kolesateam.confapp.eventDetails.domain.ImageLoader
+import kz.kolesateam.confapp.eventDetails.presentation.viewModel.EventDetailsViewModel
 import kz.kolesateam.confapp.events.presentation.view.TIME_AND_PLACE_FORMAT
 import kz.kolesateam.confapp.utils.extensions.getEventFormattedDateTime
 import kz.kolesateam.confapp.utils.extensions.hide

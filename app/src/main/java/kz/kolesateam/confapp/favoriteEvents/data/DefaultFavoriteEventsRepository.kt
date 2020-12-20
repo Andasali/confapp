@@ -4,7 +4,11 @@ import android.content.Context
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.type.MapType
 import kz.kolesateam.confapp.common.data.models.EventApiData
+import kz.kolesateam.confapp.common.domain.models.EventData
 import kz.kolesateam.confapp.favoriteEvents.domain.FavoriteEventsRepository
+import kz.kolesateam.confapp.utils.mappers.EventApiDataMapper
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZonedDateTime
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
@@ -12,18 +16,17 @@ const val FAVOURITE_EVENTS_FILE_NAME = "favourite_events.json"
 
 class DefaultFavoriteEventsRepository(
     private val context: Context,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val eventApiDataMapper: EventApiDataMapper
 ) : FavoriteEventsRepository {
 
-    private var favoriteEventsMap: MutableMap<Int, EventApiData> = mutableMapOf()
+    private val favoriteEventsMap: MutableMap<Int, EventData> = mutableMapOf()
 
     init {
         favoriteEventsMap.putAll(getFavoriteEventsFromFile())
     }
 
-    override fun saveEvent(event: EventApiData?) {
-        event?.id ?: return
-
+    override fun saveEvent(event: EventData) {
         favoriteEventsMap[event.id] = event
         saveFavoriteEventsToFile()
     }
@@ -33,12 +36,25 @@ class DefaultFavoriteEventsRepository(
         saveFavoriteEventsToFile()
     }
 
-    override fun getAllFavoriteEvents(): List<EventApiData> {
+    override fun getAllFavoriteEvents(): List<EventData> {
         return favoriteEventsMap.values.toList()
     }
 
+    override fun isFavoriteEvent(eventId: Int): Boolean = favoriteEventsMap.containsKey(eventId)
+
+    override fun isCompletedEvent(eventTime: ZonedDateTime): Boolean {
+        val dateNow: ZonedDateTime = ZonedDateTime.now(ZoneOffset.ofHours(6))
+
+        return dateNow.isAfter(eventTime)
+    }
+
     private fun saveFavoriteEventsToFile() {
-        val favoriteEventsJsonString: String = objectMapper.writeValueAsString(favoriteEventsMap)
+        val favoriteEventsForSavingToFile: MutableMap<Int, EventApiData> = mutableMapOf()
+        favoriteEventsMap.values.forEach {
+            favoriteEventsForSavingToFile[it.id] = eventApiDataMapper.map(it)
+        }
+
+        val favoriteEventsJsonString: String = objectMapper.writeValueAsString(favoriteEventsForSavingToFile)
         val fileOutputStream: FileOutputStream = context.openFileOutput(
             FAVOURITE_EVENTS_FILE_NAME,
             Context.MODE_PRIVATE
@@ -47,7 +63,7 @@ class DefaultFavoriteEventsRepository(
         fileOutputStream.close()
     }
 
-    private fun getFavoriteEventsFromFile(): Map<Int, EventApiData> {
+    private fun getFavoriteEventsFromFile(): Map<Int, EventData> {
         var fileInputStream: FileInputStream? = null
 
         try {
@@ -59,8 +75,21 @@ class DefaultFavoriteEventsRepository(
         }
 
         val favoriteEventsJsonString: String = fileInputStream.bufferedReader().readLines().joinToString()
-        val mapType: MapType = objectMapper.typeFactory.constructMapType(Map::class.java, Int::class.java, EventApiData::class.java)
+        val mapType: MapType = objectMapper.typeFactory.constructMapType(
+            Map::class.java,
+            Int::class.java,
+            EventApiData::class.java
+        )
 
-        return objectMapper.readValue(favoriteEventsJsonString, mapType)
+        val favoriteEventsFromFile: MutableMap<Int, EventData> = mutableMapOf()
+        val favoriteEventApiDataFromFile = objectMapper.readValue(favoriteEventsJsonString, mapType) as? Map<Int, EventApiData>
+
+        favoriteEventApiDataFromFile?.values?.forEach { eventApiData ->
+            eventApiData.id?.let {
+                favoriteEventsFromFile[eventApiData.id] = eventApiDataMapper.map(eventApiData)
+            } ?: return@forEach
+        }
+
+        return favoriteEventsFromFile
     }
 }

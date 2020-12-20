@@ -13,7 +13,6 @@ import kz.kolesateam.confapp.R
 import kz.kolesateam.confapp.eventDetails.presentation.EventDetailsRouter
 
 const val FAVORITE_NOTIFICATION_CHANNEL = "favorite_notification_channel"
-const val NOTIFICATION_EVENT_TITLE_KEY = "notification_event_title"
 
 object NotificationHelper {
 
@@ -27,11 +26,13 @@ object NotificationHelper {
 
     fun sendNotification(
         title: String,
-        content: String
+        content: String,
+        eventId: Int
     ) {
         val notification: Notification = getNotification(
             title = title,
-            content = content
+            content = content,
+            eventId = eventId
         )
 
         NotificationManagerCompat.from(application).notify(notificationIdCounter++, notification)
@@ -39,12 +40,14 @@ object NotificationHelper {
 
     private fun getNotification(
         title: String,
-        content: String
+        content: String,
+        eventId: Int
     ): Notification {
 
-        val intent = EventDetailsRouter().createIntent(application).apply {
-            putExtra(NOTIFICATION_EVENT_TITLE_KEY, content)
-        }
+        val intent = EventDetailsRouter().createIntent(
+            context = application,
+            eventId = eventId
+        )
 
         val pendingIntent = PendingIntent.getActivity(
             application,

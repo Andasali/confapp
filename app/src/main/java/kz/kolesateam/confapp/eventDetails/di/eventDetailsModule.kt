@@ -1,12 +1,12 @@
-package kz.kolesateam.confapp.event_details.di
+package kz.kolesateam.confapp.eventDetails.di
 
-import kz.kolesateam.confapp.event_details.data.DefaultEventDetailsRepository
-import kz.kolesateam.confapp.event_details.data.DefaultImageLoader
-import kz.kolesateam.confapp.event_details.data.EventDetailsDataSource
-import kz.kolesateam.confapp.event_details.domain.EventDetailsRepository
-import kz.kolesateam.confapp.event_details.domain.ImageLoader
-import kz.kolesateam.confapp.event_details.presentation.EventDetailsRouter
-import kz.kolesateam.confapp.event_details.presentation.viewModel.EventDetailsViewModel
+import kz.kolesateam.confapp.eventDetails.data.DefaultEventDetailsRepository
+import kz.kolesateam.confapp.eventDetails.data.DefaultImageLoader
+import kz.kolesateam.confapp.eventDetails.data.EventDetailsDataSource
+import kz.kolesateam.confapp.eventDetails.domain.EventDetailsRepository
+import kz.kolesateam.confapp.eventDetails.domain.ImageLoader
+import kz.kolesateam.confapp.eventDetails.presentation.EventDetailsRouter
+import kz.kolesateam.confapp.eventDetails.presentation.viewModel.EventDetailsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit

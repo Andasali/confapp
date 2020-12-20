@@ -1,8 +1,9 @@
-package kz.kolesateam.confapp.event_details.data
+package kz.kolesateam.confapp.eventDetails.data
 
 import kz.kolesateam.confapp.common.domain.models.EventData
-import kz.kolesateam.confapp.event_details.domain.EventDetailsRepository
+import kz.kolesateam.confapp.eventDetails.domain.EventDetailsRepository
 import kz.kolesateam.confapp.utils.mappers.EventApiDataMapper
+import retrofit2.awaitResponse
 
 class DefaultEventDetailsRepository(
     private val eventDetailsDataSource: EventDetailsDataSource,

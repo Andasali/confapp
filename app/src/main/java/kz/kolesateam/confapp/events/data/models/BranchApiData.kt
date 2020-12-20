@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import kz.kolesateam.confapp.common.data.models.EventApiData
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class BranchApiData (
+data class BranchApiData(
     @JsonProperty("id")
     val id: Int?,
     @JsonProperty("title")
     val title: String?,
     @JsonProperty("events")
-    val events: List<EventApiData>
-    )
+    val events: List<EventApiData>?
+)

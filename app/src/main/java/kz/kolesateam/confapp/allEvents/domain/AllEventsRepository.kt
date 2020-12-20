@@ -1,13 +1,13 @@
 package kz.kolesateam.confapp.allEvents.domain
 
 import androidx.annotation.WorkerThread
-import kz.kolesateam.confapp.common.data.models.EventApiData
+import kz.kolesateam.confapp.common.domain.models.EventData
 
 interface AllEventsRepository {
 
     @WorkerThread
     suspend fun getAllEvents(
-        result: (List<EventApiData>) -> Unit,
+        result: (List<EventData>) -> Unit,
         fail: (String?) -> Unit,
         branchId: Int
     )

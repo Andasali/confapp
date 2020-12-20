@@ -2,32 +2,56 @@ package kz.kolesateam.confapp.favoriteEvents.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kz.kolesateam.confapp.common.data.models.EventApiData
+import kz.kolesateam.confapp.common.data.model.EventScreenNavigation
+import kz.kolesateam.confapp.common.domain.models.EventData
 import kz.kolesateam.confapp.favoriteEvents.data.model.EventsState
-import kz.kolesateam.confapp.common.domain.EventsMapper
 import kz.kolesateam.confapp.favoriteEvents.domain.FavoriteEventsRepository
+import kz.kolesateam.confapp.notifications.NotificationAlarmHelper
 
 class FavoriteEventsViewModel(
     private val favoriteEventsRepository: FavoriteEventsRepository,
-    private val eventsMapper: EventsMapper
+    private val notificationAlarmHelper: NotificationAlarmHelper
 ) : ViewModel() {
 
-    val favoriteEventsLiveData: MutableLiveData<List<EventApiData>> = MutableLiveData()
+    val favoriteEventsLiveData: MutableLiveData<List<EventData>> = MutableLiveData()
     val emptyEventsLiveData: MutableLiveData<EventsState> = MutableLiveData()
+    val eventScreenNavigationLiveData: MutableLiveData<EventScreenNavigation> = MutableLiveData()
 
     fun onStart(){
         getFavoriteEvents()
     }
 
-    fun onFavoriteButtonClick(eventApiData: EventApiData?) {
-        when (eventApiData?.isFavorite) {
-            true -> favoriteEventsRepository.removeEvent(eventId = eventApiData.id)
-            else -> favoriteEventsRepository.saveEvent(event = eventApiData)
+    fun onFavoriteButtonClick(eventData: EventData) {
+        when (eventData.isFavorite) {
+            true -> {
+                favoriteEventsRepository.removeEvent(eventId = eventData.id)
+                cancelEvent(eventData)
+            }
+            else -> {
+                favoriteEventsRepository.saveEvent(event = eventData)
+                scheduleEvent(eventData)
+            }
         }
     }
 
+    fun onEventClick(eventId: Int){
+        eventScreenNavigationLiveData.value = EventScreenNavigation.EventDetails(eventId = eventId)
+    }
+
+    private fun scheduleEvent(eventData: EventData){
+        notificationAlarmHelper.createNotificationAlarm(
+            eventData = eventData
+        )
+    }
+
+    private fun cancelEvent(eventData: EventData) {
+        notificationAlarmHelper.cancelNotificationAlarm(
+            eventData = eventData
+        )
+    }
+
     private fun getFavoriteEvents(){
-        val favoriteEventsList: List<EventApiData> = favoriteEventsRepository.getAllFavoriteEvents()
+        val favoriteEventsList: List<EventData> = favoriteEventsRepository.getAllFavoriteEvents()
 
         if(favoriteEventsList.isEmpty()){
             emptyEventsLiveData.value = EventsState.Empty
@@ -40,11 +64,11 @@ class FavoriteEventsViewModel(
         }
     }
 
-    private fun setFavoriteEvents(events: List<EventApiData>) = events.forEach { event ->
-        event.isFavorite = eventsMapper.isFavoriteEvent(event)
+    private fun setFavoriteEvents(events: List<EventData>) = events.forEach { event ->
+        event.isFavorite = favoriteEventsRepository.isFavoriteEvent(eventId = event.id)
     }
 
-    private fun checkEventsTime(events: List<EventApiData>) = events.forEach {
-        it.isCompleted = eventsMapper.isCompletedEvent(eventTime = it.endTime)
+    private fun checkEventsTime(events: List<EventData>) = events.forEach {
+        it.isCompleted = favoriteEventsRepository.isCompletedEvent(eventTime = it.endTime)
     }
 }

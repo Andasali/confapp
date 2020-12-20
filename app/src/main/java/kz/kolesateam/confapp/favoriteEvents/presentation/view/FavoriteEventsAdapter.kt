@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kz.kolesateam.confapp.R
-import kz.kolesateam.confapp.common.data.models.EventApiData
+import kz.kolesateam.confapp.common.domain.models.EventData
 import kz.kolesateam.confapp.common.view.EventClickListener
 
 class FavoriteEventsAdapter(
     private val eventClickListener: EventClickListener
 ): RecyclerView.Adapter<FavoriteEventViewHolder>() {
 
-    private val favoriteEventsList: MutableList<EventApiData> = mutableListOf()
+    private val favoriteEventsList: MutableList<EventData> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteEventViewHolder {
         return createEventViewHolder(parent)
@@ -23,7 +23,7 @@ class FavoriteEventsAdapter(
 
     override fun getItemCount(): Int = favoriteEventsList.size
 
-    fun setList(events: List<EventApiData>){
+    fun setList(events: List<EventData>){
         this.favoriteEventsList.clear()
         this.favoriteEventsList.addAll(events)
 

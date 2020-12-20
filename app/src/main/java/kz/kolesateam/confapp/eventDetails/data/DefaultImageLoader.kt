@@ -1,9 +1,9 @@
-package kz.kolesateam.confapp.event_details.data
+package kz.kolesateam.confapp.eventDetails.data
 
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import kz.kolesateam.confapp.R
-import kz.kolesateam.confapp.event_details.domain.ImageLoader
+import kz.kolesateam.confapp.eventDetails.domain.ImageLoader
 
 class DefaultImageLoader : ImageLoader {
 

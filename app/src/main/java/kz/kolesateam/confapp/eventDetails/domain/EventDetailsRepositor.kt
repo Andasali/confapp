@@ -1,4 +1,4 @@
-package kz.kolesateam.confapp.event_details.domain
+package kz.kolesateam.confapp.eventDetails.domain
 
 import androidx.annotation.WorkerThread
 import kz.kolesateam.confapp.common.domain.models.EventData

@@ -6,18 +6,24 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import kz.kolesateam.confapp.R
-import kz.kolesateam.confapp.common.data.models.EventApiData
+import kz.kolesateam.confapp.common.data.model.EventScreenNavigation
+import kz.kolesateam.confapp.common.domain.models.EventData
 import kz.kolesateam.confapp.common.view.EventClickListener
+import kz.kolesateam.confapp.eventDetails.presentation.EventDetailsRouter
+import kz.kolesateam.confapp.events.presentation.UpcomingEventsRouter
 import kz.kolesateam.confapp.favoriteEvents.data.model.EventsState
 import kz.kolesateam.confapp.favoriteEvents.presentation.view.FavoriteEventsAdapter
 import kz.kolesateam.confapp.favoriteEvents.presentation.viewModel.FavoriteEventsViewModel
 import kz.kolesateam.confapp.utils.extensions.hide
 import kz.kolesateam.confapp.utils.extensions.show
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteEventsActivity : AppCompatActivity(), EventClickListener {
 
     private val favoriteEventsViewModel: FavoriteEventsViewModel by viewModel()
+    private val upcomingEventsRouter: UpcomingEventsRouter by inject()
+    private val eventDetailsRouter: EventDetailsRouter by inject()
 
     private val favoriteEventsAdapter: FavoriteEventsAdapter by lazy {
         FavoriteEventsAdapter(eventClickListener = this)
@@ -41,13 +47,18 @@ class FavoriteEventsActivity : AppCompatActivity(), EventClickListener {
         favoriteEventsViewModel.onStart()
     }
 
-    override fun onFavoriteButtonClicked(eventApiData: EventApiData) {
-        favoriteEventsViewModel.onFavoriteButtonClick(eventApiData)
+    override fun onFavoriteButtonClicked(eventData: EventData) {
+        favoriteEventsViewModel.onFavoriteButtonClick(eventData)
+    }
+
+    override fun onEventClicked(eventId: Int) {
+        favoriteEventsViewModel.onEventClick(eventId)
     }
 
     private fun initViews() {
         homeButton = findViewById(R.id.activity_all_favorites_events_button_home)
         homeButton.setOnClickListener {
+            startActivity(upcomingEventsRouter.createIntent(this))
             finish()
         }
 
@@ -59,16 +70,32 @@ class FavoriteEventsActivity : AppCompatActivity(), EventClickListener {
     private fun observeLiveData() {
         favoriteEventsViewModel.favoriteEventsLiveData.observe(this, ::handleFavoriteEvents)
         favoriteEventsViewModel.emptyEventsLiveData.observe(this, ::handleFailEvents)
+        favoriteEventsViewModel.eventScreenNavigationLiveData.observe(this, ::handleNavigation)
     }
 
-    private fun handleFavoriteEvents(favoriteEventsList: List<EventApiData>) {
+    private fun handleFavoriteEvents(favoriteEventsList: List<EventData>) {
         favoriteEventsAdapter.setList(favoriteEventsList)
     }
 
     private fun handleFailEvents(emptyState: EventsState) {
-        when(emptyState){
+        when (emptyState) {
             EventsState.Empty -> emptyEventsView.show()
             EventsState.Full -> emptyEventsView.hide()
         }
+    }
+
+    private fun handleNavigation(eventScreenNavigation: EventScreenNavigation?) {
+        when (eventScreenNavigation) {
+            is EventScreenNavigation.EventDetails -> navigateToEventDetails(eventId = eventScreenNavigation.eventId)
+        }
+    }
+
+    private fun navigateToEventDetails(eventId: Int){
+        startActivity(
+            eventDetailsRouter.createIntent(
+                context = this,
+                eventId = eventId
+            )
+        )
     }
 }

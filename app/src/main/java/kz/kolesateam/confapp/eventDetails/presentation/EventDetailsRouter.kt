@@ -1,4 +1,4 @@
-package kz.kolesateam.confapp.event_details.presentation
+package kz.kolesateam.confapp.eventDetails.presentation
 
 import android.content.Context
 import android.content.Intent

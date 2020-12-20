@@ -2,11 +2,12 @@ package kz.kolesateam.confapp.di
 
 import android.content.Context
 import com.fasterxml.jackson.databind.ObjectMapper
-import kz.kolesateam.confapp.common.data.DefaultEventsMapper
-import kz.kolesateam.confapp.common.domain.EventsMapper
-import kz.kolesateam.confapp.events.data.UserNameSharedPrefsDataSource
-import kz.kolesateam.confapp.events.domain.UserNameDataSource
+import kz.kolesateam.confapp.common.data.UserNameSharedPrefsDataSource
+import kz.kolesateam.confapp.common.domain.UserNameDataSource
 import kz.kolesateam.confapp.notifications.NotificationAlarmHelper
+import kz.kolesateam.confapp.utils.mappers.BranchApiDataMapper
+import kz.kolesateam.confapp.utils.mappers.EventApiDataMapper
+import kz.kolesateam.confapp.utils.mappers.SpeakerApiDataMapper
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -38,15 +39,25 @@ val applicationModule = module {
     }
 
     single {
-        DefaultEventsMapper(
-            favoriteEventsRepository = get()
-        ) as EventsMapper
-    }
-
-    single {
         NotificationAlarmHelper(
             application = androidApplication()
         )
+    }
+
+    single {
+        BranchApiDataMapper(
+            eventApiDataMapper = get()
+        )
+    }
+
+    single {
+        EventApiDataMapper(
+            speakerApiDataMapper = get()
+        )
+    }
+
+    single {
+        SpeakerApiDataMapper()
     }
 
     factory(named(SHARED_PREFS_DATA_SOURCE)) {

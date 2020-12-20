@@ -1,4 +1,4 @@
-package kz.kolesateam.confapp.event_details.presentation.viewModel
+package kz.kolesateam.confapp.eventDetails.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,8 +7,8 @@ import kotlinx.coroutines.launch
 import kz.kolesateam.confapp.common.data.model.ProgressState
 import kz.kolesateam.confapp.common.data.model.ResponseData
 import kz.kolesateam.confapp.common.domain.models.EventData
-import kz.kolesateam.confapp.event_details.domain.EventDetailsRepository
-import kz.kolesateam.confapp.favorite_events.domain.FavoriteEventsRepository
+import kz.kolesateam.confapp.eventDetails.domain.EventDetailsRepository
+import kz.kolesateam.confapp.favoriteEvents.domain.FavoriteEventsRepository
 import kz.kolesateam.confapp.notifications.NotificationAlarmHelper
 
 class EventDetailsViewModel(

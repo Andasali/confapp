@@ -1,6 +1,6 @@
 package kz.kolesateam.confapp.allEvents.presentation.models
 
-import kz.kolesateam.confapp.common.data.models.EventApiData
+import kz.kolesateam.confapp.common.domain.models.EventData
 
 const val BRANCH_TITLE_TYPE = 0
 const val EVENT_TYPE = 1
@@ -14,5 +14,5 @@ data class BranchTitleItem(
 ) : AllEventsListItem(BRANCH_TITLE_TYPE)
 
 data class EventListItem(
-    val data: EventApiData
+    val data: EventData
 ) : AllEventsListItem(EVENT_TYPE)

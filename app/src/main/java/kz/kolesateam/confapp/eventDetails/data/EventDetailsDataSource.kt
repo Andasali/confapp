@@ -1,4 +1,4 @@
-package kz.kolesateam.confapp.event_details.data
+package kz.kolesateam.confapp.eventDetails.data
 
 import kz.kolesateam.confapp.common.data.models.EventApiData
 import retrofit2.Call

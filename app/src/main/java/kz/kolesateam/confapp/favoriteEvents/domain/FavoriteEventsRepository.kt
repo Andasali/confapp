@@ -1,4 +1,4 @@
-package kz.kolesateam.confapp.favorite_events.domain
+package kz.kolesateam.confapp.favoriteEvents.domain
 
 import kz.kolesateam.confapp.common.domain.models.EventData
 import org.threeten.bp.ZonedDateTime

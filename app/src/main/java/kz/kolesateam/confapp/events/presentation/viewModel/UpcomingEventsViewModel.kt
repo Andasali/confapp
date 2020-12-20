@@ -5,14 +5,13 @@ import androidx.lifecycle.ViewModel
 import kz.kolesateam.confapp.common.data.model.EventScreenNavigation
 import kz.kolesateam.confapp.common.data.model.ProgressState
 import kz.kolesateam.confapp.common.data.model.ResponseData
-import kz.kolesateam.confapp.common.data.models.EventApiData
-import kz.kolesateam.confapp.events.data.models.BranchApiData
+import kz.kolesateam.confapp.common.domain.models.BranchData
+import kz.kolesateam.confapp.common.domain.models.EventData
 import kz.kolesateam.confapp.events.domain.UpcomingEventsRepository
-import kz.kolesateam.confapp.events.domain.UserNameDataSource
+import kz.kolesateam.confapp.common.domain.UserNameDataSource
 import kz.kolesateam.confapp.events.presentation.models.BranchListItem
 import kz.kolesateam.confapp.events.presentation.models.HeaderItem
 import kz.kolesateam.confapp.events.presentation.models.UpcomingEventListItem
-import kz.kolesateam.confapp.common.domain.EventsMapper
 import kz.kolesateam.confapp.favoriteEvents.domain.FavoriteEventsRepository
 import kz.kolesateam.confapp.notifications.NotificationAlarmHelper
 
@@ -20,7 +19,6 @@ class UpcomingEventsViewModel(
     private val upcomingEventsRepository: UpcomingEventsRepository,
     private val userNameSharedPrefsDataSource: UserNameDataSource,
     private val favoriteEventsRepository: FavoriteEventsRepository,
-    private val eventsMapper: EventsMapper,
     private val notificationAlarmHelper: NotificationAlarmHelper
 ) : ViewModel() {
 
@@ -43,36 +41,50 @@ class UpcomingEventsViewModel(
         )
     }
 
-    fun onFavoriteButtonClick(eventApiData: EventApiData) {
-        when(eventApiData.isFavorite){
+    fun onFavoriteButtonClick(eventData: EventData) {
+        when(eventData.isFavorite){
             true -> {
-                favoriteEventsRepository.removeEvent(eventId = eventApiData.id)
-                cancelEvent(eventApiData)
+                favoriteEventsRepository.removeEvent(eventId = eventData.id)
+                cancelEvent(eventData)
             }
             else -> {
-                favoriteEventsRepository.saveEvent(event = eventApiData)
-                scheduleEvent(eventApiData)
+                favoriteEventsRepository.saveEvent(event = eventData)
+                scheduleEvent(eventData)
             }
         }
     }
 
-    private fun scheduleEvent(eventApiData: EventApiData){
+    fun onBranchClick(
+        branchId: Int,
+        branchTitle: String
+    ) {
+        eventScreenNavigationLiveData.value = EventScreenNavigation.AllEvents(
+            branchId = branchId,
+            branchTitle = branchTitle
+        )
+    }
+
+    fun onEventClick(eventId: Int){
+        eventScreenNavigationLiveData.value = EventScreenNavigation.EventDetails(eventId = eventId)
+    }
+
+    fun onFavoriteEventsButtonClick(){
+        eventScreenNavigationLiveData.value = EventScreenNavigation.FavoriteEvents
+    }
+
+    private fun scheduleEvent(eventApiData: EventData){
         notificationAlarmHelper.createNotificationAlarm(
-            eventApiData = eventApiData
+            eventData = eventApiData
         )
     }
 
-    private fun cancelEvent(eventApiData: EventApiData) {
+    private fun cancelEvent(eventApiData: EventData) {
         notificationAlarmHelper.cancelNotificationAlarm(
-            eventApiData = eventApiData
+            eventData = eventApiData
         )
     }
 
-    fun onBranchClickListener(eventScreenNavigation: EventScreenNavigation) {
-        eventScreenNavigationLiveData.value = eventScreenNavigation
-    }
-
-    private fun prepareAdapterList(branchList: List<BranchApiData>): List<UpcomingEventListItem> {
+    private fun prepareAdapterList(branchList: List<BranchData>): List<UpcomingEventListItem> {
         return listOf(getHeaderItem()) + getBranchItems(branchList)
     }
 
@@ -80,11 +92,11 @@ class UpcomingEventsViewModel(
         userName = userNameSharedPrefsDataSource.getUserName()
     )
 
-    private fun getBranchItems(branchList: List<BranchApiData>): List<UpcomingEventListItem> = branchList.map { branchApiData ->
-        branchApiData.events?.forEach {
-            it.isFavorite = eventsMapper.isFavoriteEvent(it)
+    private fun getBranchItems(branchList: List<BranchData>): List<UpcomingEventListItem> = branchList.map { branchData ->
+        branchData.events.forEach {
+            it.isFavorite = favoriteEventsRepository.isFavoriteEvent(eventId = it.id)
         }
 
-        BranchListItem(data = branchApiData)
+        BranchListItem(data = branchData)
     }
 }

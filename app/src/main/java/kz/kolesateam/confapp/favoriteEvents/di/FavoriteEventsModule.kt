@@ -13,14 +13,15 @@ val favoriteEventsModule = module {
     viewModel {
         FavoriteEventsViewModel(
             favoriteEventsRepository = get(),
-            eventsMapper = get()
+            notificationAlarmHelper = get()
         )
     }
 
     single {
         DefaultFavoriteEventsRepository(
             context = androidApplication(),
-            objectMapper = get()
+            objectMapper = get(),
+            eventApiDataMapper = get()
         ) as FavoriteEventsRepository
     }
 

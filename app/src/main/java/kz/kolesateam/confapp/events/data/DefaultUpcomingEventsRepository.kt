@@ -1,17 +1,20 @@
 package kz.kolesateam.confapp.events.data
 
+import kz.kolesateam.confapp.common.domain.models.BranchData
 import kz.kolesateam.confapp.events.data.models.BranchApiData
 import kz.kolesateam.confapp.events.domain.UpcomingEventsRepository
+import kz.kolesateam.confapp.utils.mappers.BranchApiDataMapper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class DefaultUpcomingEventsRepository(
-    private val upcomingEventsDataSource: UpcomingEventsDataSource
+    private val upcomingEventsDataSource: UpcomingEventsDataSource,
+    private val branchApiDataMapper: BranchApiDataMapper
 ): UpcomingEventsRepository {
 
     override fun getUpcomingEvents(
-        result: (List<BranchApiData>) -> Unit,
+        result: (List<BranchData>) -> Unit,
         fail: (String?) -> Unit
     ) {
         upcomingEventsDataSource.getUpcomingEvents()
@@ -21,7 +24,9 @@ class DefaultUpcomingEventsRepository(
                     response: Response<List<BranchApiData>>
                 ) {
                     if (response.isSuccessful) {
-                        result(response.body()!!)
+                        val branchDataList: List<BranchData> = branchApiDataMapper.map(response.body())
+
+                        result(branchDataList)
                     } else {
                         fail(response.message())
                     }

@@ -1,26 +1,28 @@
 package kz.kolesateam.confapp.events.presentation.view
 
 import android.view.View
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.TextView
 import kz.kolesateam.confapp.R
-import kz.kolesateam.confapp.common.data.models.EventApiData
-import kz.kolesateam.confapp.events.presentation.models.BranchListItem
-import kz.kolesateam.confapp.events.presentation.models.UpcomingEventListItem
+import kz.kolesateam.confapp.common.domain.models.BranchData
+import kz.kolesateam.confapp.common.domain.models.EventData
 import kz.kolesateam.confapp.common.view.BaseViewHolder
 import kz.kolesateam.confapp.common.view.EventClickListener
-import kz.kolesateam.confapp.events.data.models.BranchApiData
+import kz.kolesateam.confapp.events.presentation.models.BranchListItem
+import kz.kolesateam.confapp.events.presentation.models.UpcomingEventListItem
+import kz.kolesateam.confapp.utils.extensions.getEventFormattedDateTime
 import kz.kolesateam.confapp.utils.extensions.show
 
 const val TIME_AND_PLACE_FORMAT = "%s - %s • %s"
-const val DROP_LAST_STRING_TIME = 3
-const val DEFAULT_BRANCH_ID = 0
-const val DEFAULT_BRANCH_TITLE = "Event"
 
 class BranchViewHolder(
     itemView: View,
     private val eventClickListener: EventClickListener
 ) : BaseViewHolder<UpcomingEventListItem>(itemView) {
+
+    private val horizontalScrollView: HorizontalScrollView = itemView.findViewById(R.id.branch_item_horizontal_scroll_view)
+    private val oldScrollX = horizontalScrollView.scrollX
 
     private val currentEventView: View = itemView.findViewById(R.id.events_card_current)
     private val nextEventView: View = itemView.findViewById(R.id.events_card_next)
@@ -28,7 +30,6 @@ class BranchViewHolder(
     private val branchTitleAndArrow: View = itemView.findViewById(R.id.branch_item_title_and_arrow)
     private val branchTitle: TextView = itemView.findViewById(R.id.branch_item_branch_title)
 
-    private val currentEventReportTextView: TextView = currentEventView.findViewById(R.id.events_card_layout_next_report)
     private val speakerNameCurrent: TextView = currentEventView.findViewById(R.id.events_card_speaker_name)
     private val eventCardAndPlaceCurrent: TextView = currentEventView.findViewById(R.id.events_card_date_and_place)
     private val speakerJobCurrent: TextView = currentEventView.findViewById(R.id.events_card_speaker_job)
@@ -46,11 +47,9 @@ class BranchViewHolder(
         val branchApiData = (data as? BranchListItem)?.data ?: return
 
         branchTitle.text = branchApiData.title
-
         nextEventReportTextView.show()
-        nextEventView.setBackgroundResource(R.drawable.bg_events_card_dark)
 
-        val currentEvent = branchApiData.events?.first()
+        val currentEvent = branchApiData.events.first()
         fillData(
             event = currentEvent,
             eventCardAndPlace = eventCardAndPlaceCurrent,
@@ -60,7 +59,7 @@ class BranchViewHolder(
             favoriteButton = favoriteButtonCurrent
         )
 
-        val nextEvent = branchApiData.events?.last()
+        val nextEvent = branchApiData.events.last()
         fillData(
             event = nextEvent,
             eventCardAndPlace = eventCardAndPlaceNext,
@@ -72,13 +71,13 @@ class BranchViewHolder(
 
         initListeners(
             branchApiData = branchApiData,
-            currentEvent = currentEvent!!,
-            nextEvent = nextEvent!!
+            currentEvent = currentEvent,
+            nextEvent = nextEvent
         )
     }
 
     private fun fillData(
-        event: EventApiData?,
+        event: EventData,
         eventCardAndPlace: TextView,
         speakerName: TextView,
         speakerJob: TextView,
@@ -86,52 +85,75 @@ class BranchViewHolder(
         favoriteButton: ImageView
     ) {
         eventCardAndPlace.text = TIME_AND_PLACE_FORMAT.format(
-            event?.startTime?.dropLast(DROP_LAST_STRING_TIME),
-            event?.endTime?.dropLast(DROP_LAST_STRING_TIME),
-            event?.place
+            event.startTime.getEventFormattedDateTime(),
+            event.endTime.getEventFormattedDateTime(),
+            event.place
         )
-        speakerName.text = event?.speaker?.fullName
-        speakerJob.text = event?.speaker?.job
-        eventTitle.text = event?.title
+        speakerName.text = event.speaker.fullName
+        speakerJob.text = event.speaker.job
+        eventTitle.text = event.title
 
-        val favoriteButtonResource = getFavoriteButtonResource(event?.isFavorite ?: false)
+        val favoriteButtonResource = getFavoriteButtonResource(event.isFavorite)
         favoriteButton.setImageResource(favoriteButtonResource)
     }
 
     private fun initListeners(
-        branchApiData: BranchApiData,
-        currentEvent: EventApiData,
-        nextEvent: EventApiData
+        branchApiData: BranchData,
+        currentEvent: EventData,
+        nextEvent: EventData
     ) {
         branchTitleAndArrow.setOnClickListener {
             eventClickListener.onBranchClicked(
-                branchId = branchApiData.id ?: DEFAULT_BRANCH_ID,
-                branchTitle = branchApiData.title ?: DEFAULT_BRANCH_TITLE
+                branchId = branchApiData.id,
+                branchTitle = branchApiData.title
             )
         }
 
         currentEventView.setOnClickListener {
-            eventClickListener.onEventClicked(currentEvent.title.toString())
+            eventClickListener.onEventClicked(eventId = currentEvent.id)
         }
 
         nextEventView.setOnClickListener {
-            eventClickListener.onEventClicked(nextEvent.title.toString())
+            eventClickListener.onEventClicked(eventId = nextEvent.id)
         }
 
         favoriteButtonCurrent.setOnClickListener {
-            val favoriteButtonResource = getFavoriteButtonResource(currentEvent.isFavorite)
-            favoriteButtonCurrent.setImageResource(favoriteButtonResource)
-
-            currentEvent.isFavorite = !currentEvent.isFavorite
-            eventClickListener.onFavoriteButtonClicked(eventApiData = currentEvent)
+            onFavoriteButtonClick(
+                event = currentEvent,
+                favoriteButton = favoriteButtonCurrent
+            )
         }
 
         favoriteButtonNext.setOnClickListener {
-            val favoriteButtonResource = getFavoriteButtonResource(nextEvent.isFavorite)
-            favoriteButtonNext.setImageResource(favoriteButtonResource)
+            onFavoriteButtonClick(
+                event = nextEvent,
+                favoriteButton = favoriteButtonNext
+            )
+        }
 
-            nextEvent.isFavorite = !nextEvent.isFavorite
-            eventClickListener.onFavoriteButtonClicked(eventApiData = nextEvent)
+        horizontalScrollView.viewTreeObserver.addOnScrollChangedListener {
+            onHorizontalScrollView()
+        }
+    }
+
+    private fun onFavoriteButtonClick(
+        event: EventData,
+        favoriteButton: ImageView
+    ){
+        val favoriteButtonResource = getFavoriteButtonResource(event.isFavorite)
+        favoriteButton.setImageResource(favoriteButtonResource)
+
+        event.isFavorite = !event.isFavorite
+        eventClickListener.onFavoriteButtonClicked(eventData = event)
+    }
+
+    private fun onHorizontalScrollView(){
+        if(oldScrollX == horizontalScrollView.scrollX){
+            nextEventView.setBackgroundResource(R.drawable.bg_events_card_dark)
+            currentEventView.setBackgroundResource(R.drawable.bg_events_card)
+        } else {
+            currentEventView.setBackgroundResource(R.drawable.bg_events_card_dark)
+            nextEventView.setBackgroundResource(R.drawable.bg_events_card)
         }
     }
 

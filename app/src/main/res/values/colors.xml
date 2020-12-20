@@ -21,5 +21,4 @@
     <color name="activity_upcoming_events_async_text_view_color">#4CAF50</color>
     <color name="activity_upcoming_events_error_text_view_color">#F44336</color>
     <color name="bg_event_card_darken">#B3FFFFFF</color>
-    <color name="event_completed_color">#F44336</color>
 </resources>

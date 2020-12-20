@@ -5,11 +5,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kz.kolesateam.confapp.R
-import kz.kolesateam.confapp.common.data.models.EventApiData
+import kz.kolesateam.confapp.common.domain.models.EventData
 import kz.kolesateam.confapp.common.view.EventClickListener
-import kz.kolesateam.confapp.events.data.EMPTY_KEY
-import kz.kolesateam.confapp.events.presentation.view.DROP_LAST_STRING_TIME
 import kz.kolesateam.confapp.events.presentation.view.TIME_AND_PLACE_FORMAT
+import kz.kolesateam.confapp.utils.extensions.getEventFormattedDateTime
 import kz.kolesateam.confapp.utils.extensions.show
 
 class FavoriteEventViewHolder(
@@ -25,7 +24,7 @@ class FavoriteEventViewHolder(
     private val eventTitleTextView: TextView = itemView.findViewById(R.id.events_card_event_title)
 
 
-    fun onBind(event: EventApiData){
+    fun onBind(event: EventData){
         fillData(event)
         initListeners(event)
 
@@ -34,23 +33,23 @@ class FavoriteEventViewHolder(
         }
     }
 
-    private fun fillData(event: EventApiData?){
+    private fun fillData(event: EventData){
         dateAndPlaceTextView.text = TIME_AND_PLACE_FORMAT.format(
-            event?.startTime?.dropLast(DROP_LAST_STRING_TIME),
-            event?.endTime?.dropLast(DROP_LAST_STRING_TIME),
-            event?.place
+            event.startTime.getEventFormattedDateTime(),
+            event.endTime.getEventFormattedDateTime(),
+            event.place
         )
-        speakerNameTextView.text = event?.speaker?.fullName
-        speakerJobTextView.text = event?.speaker?.job
-        eventTitleTextView.text = event?.title
+        speakerNameTextView.text = event.speaker.fullName
+        speakerJobTextView.text = event.speaker.job
+        eventTitleTextView.text = event.title
 
-        val favoriteButtonResource = getFavoriteButtonResource(event?.isFavorite ?: false)
+        val favoriteButtonResource = getFavoriteButtonResource(event.isFavorite)
         favoriteButton.setImageResource(favoriteButtonResource)
     }
 
-    private fun initListeners(event: EventApiData) {
+    private fun initListeners(event: EventData) {
         itemView.setOnClickListener {
-            eventClickListener.onEventClicked(eventTitle = event.title ?: EMPTY_KEY)
+            eventClickListener.onEventClicked(eventId = event.id)
         }
 
         favoriteButton.setOnClickListener {
@@ -58,7 +57,7 @@ class FavoriteEventViewHolder(
             favoriteButton.setImageResource(favoriteButtonResource)
 
             event.isFavorite = !event.isFavorite
-            eventClickListener.onFavoriteButtonClicked(eventApiData = event)
+            eventClickListener.onFavoriteButtonClicked(eventData = event)
         }
     }
 

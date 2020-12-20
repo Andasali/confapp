@@ -1,6 +1,5 @@
 package kz.kolesateam.confapp.events.presentation
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ProgressBar
@@ -8,29 +7,28 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import kz.kolesateam.confapp.R
-import kz.kolesateam.confapp.allEvents.presentation.AllEventsActivity
+import kz.kolesateam.confapp.allEvents.presentation.AllEventsRouter
 import kz.kolesateam.confapp.common.data.model.EventScreenNavigation
 import kz.kolesateam.confapp.common.data.model.ProgressState
 import kz.kolesateam.confapp.common.data.model.ResponseData
-import kz.kolesateam.confapp.common.data.models.EventApiData
-import kz.kolesateam.confapp.events.presentation.models.UpcomingEventListItem
+import kz.kolesateam.confapp.common.domain.models.EventData
 import kz.kolesateam.confapp.common.view.EventClickListener
+import kz.kolesateam.confapp.eventDetails.presentation.EventDetailsRouter
+import kz.kolesateam.confapp.events.presentation.models.UpcomingEventListItem
 import kz.kolesateam.confapp.events.presentation.view.BranchAdapter
 import kz.kolesateam.confapp.events.presentation.viewModel.UpcomingEventsViewModel
 import kz.kolesateam.confapp.favoriteEvents.presentation.FavoriteEventsRouter
 import kz.kolesateam.confapp.utils.extensions.hide
 import kz.kolesateam.confapp.utils.extensions.show
-import kz.kolesateam.confapp.utils.extensions.showToast
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
-const val INTENT_BRANCH_ID_KEY = "branch_id"
-const val INTENT_BRANCH_TITLE_KEY = "branch_title"
 
 class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
 
     private val upcomingEventsViewModel: UpcomingEventsViewModel by viewModel()
     private val favoriteEventsRouter: FavoriteEventsRouter by inject()
+    private val eventDetailsRouter: EventDetailsRouter by inject()
+    private val allEventsRouter: AllEventsRouter by inject()
 
     private val branchAdapter: BranchAdapter by lazy {
         BranchAdapter(eventClickListener = this)
@@ -55,20 +53,18 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
     }
 
     override fun onBranchClicked(branchId: Int, branchTitle: String) {
-        upcomingEventsViewModel.onBranchClickListener(
-            EventScreenNavigation.AllEvents(
-                branchId = branchId,
-                branchTitle = branchTitle
-            )
+        upcomingEventsViewModel.onBranchClick(
+            branchId = branchId,
+            branchTitle = branchTitle
         )
     }
 
-    override fun onEventClicked(eventTitle: String) {
-        showToast(eventTitle)
+    override fun onEventClicked(eventId: Int) {
+        upcomingEventsViewModel.onEventClick(eventId = eventId)
     }
 
-    override fun onFavoriteButtonClicked(eventApiData: EventApiData) {
-        upcomingEventsViewModel.onFavoriteButtonClick(eventApiData)
+    override fun onFavoriteButtonClicked(eventData: EventData) {
+        upcomingEventsViewModel.onFavoriteButtonClick(eventData)
     }
 
     private fun initViews() {
@@ -79,7 +75,7 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
 
         favoritesButton = findViewById(R.id.activity_upcoming_events_favorites_button)
         favoritesButton.setOnClickListener {
-            startActivity(favoriteEventsRouter.createIntent(this))
+            upcomingEventsViewModel.onFavoriteEventsButtonClick()
         }
     }
 
@@ -109,15 +105,38 @@ class UpcomingEventsActivity : AppCompatActivity(), EventClickListener {
 
     private fun handleNavigation(eventScreenNavigation: EventScreenNavigation?) {
         when (eventScreenNavigation) {
-            is EventScreenNavigation.AllEvents -> {
-                val intent = Intent(this, AllEventsActivity::class.java)
-                intent.apply {
-                    putExtra(INTENT_BRANCH_ID_KEY, eventScreenNavigation.branchId)
-                    putExtra(INTENT_BRANCH_TITLE_KEY, eventScreenNavigation.branchTitle)
-                }
-
-                startActivity(intent)
-            }
+            is EventScreenNavigation.AllEvents -> navigateToAllEvents(
+                branchId = eventScreenNavigation.branchId,
+                branchTitle = eventScreenNavigation.branchTitle
+            )
+            is EventScreenNavigation.EventDetails -> navigateToEventDetails(eventId = eventScreenNavigation.eventId)
+            is EventScreenNavigation.FavoriteEvents -> navigateToFavoriteEvents()
         }
+    }
+
+    private fun navigateToAllEvents(
+        branchId: Int,
+        branchTitle: String
+    ) {
+        startActivity(
+            allEventsRouter.createIntent(
+                context = this,
+                branchId = branchId,
+                branchTitle = branchTitle
+            )
+        )
+    }
+
+    private fun navigateToEventDetails(eventId: Int){
+        startActivity(
+            eventDetailsRouter.createIntent(
+                context = this,
+                eventId = eventId
+            )
+        )
+    }
+
+    private fun navigateToFavoriteEvents(){
+        startActivity(favoriteEventsRouter.createIntent(this))
     }
 }
