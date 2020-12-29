@@ -1,15 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".hello.presentation.HelloActivity"
+    android:orientation="vertical"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello"
-        android:layout_gravity="center"
-        android:textSize="32sp"
-        />
-</FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_hello_frame_layout_height_size"
+        android:background="@color/main_activity_frame_background"
+        >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_default_background_image"
+            android:scaleType="centerCrop"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/height_size_16x"
+                android:src="@drawable/ic_logo_white"
+                android:layout_gravity="top|center"
+                android:layout_marginTop="@dimen/layout_spacing_20x"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_corona"
+                android:layout_gravity="center"
+                />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/layout_spacing_16x"
+        >
+
+        <TextView
+            android:layout_marginTop="@dimen/layout_spacing_16x"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/what_is_ur_name"
+            android:textSize="@dimen/text_size_24x"
+            tools:text="@string/what_is_ur_name"
+            android:textColor="@color/text_primary_dark"
+            android:fontFamily="@font/roboto"
+            />
+
+        <EditText
+            android:id="@+id/activity_hello_editText_name"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/activity_hello_edit_text_height_size"
+            android:layout_marginTop="@dimen/layout_spacing_16x"
+            android:textSize="@dimen/text_size_24x"
+            android:inputType="text"
+            android:hint="@string/enter_name"
+            android:paddingHorizontal="@dimen/layout_spacing_16x"
+            android:background="@drawable/bg_edit_text_border"
+            android:fontFamily="@font/open_sans"
+            />
+
+        <Button
+            android:id="@+id/activity_hello_continue_button"
+            android:layout_marginTop="@dimen/layout_spacing_16x"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/layout_spacing_10x"
+            android:textSize="@dimen/text_size_16x"
+            android:textAllCaps="false"
+            android:text="@string/continue_decision"
+            android:background="@drawable/bg_button_shape"
+            android:enabled="false"
+            android:fontFamily="@font/open_sans"
+            />
+
+    </LinearLayout>
+</LinearLayout>

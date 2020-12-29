@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">ConfApp</string>
+    <string name="what_is_ur_name">Как тебя зовут?</string>
+    <string name="continue_decision">Продолжить</string>
+    <string name="enter_name">Введите имя</string>
+    <string name="welcome_fmt">Добро пожаловать, %1s</string>
+    <string name="default_welcome">Привет</string>
+    <string name="sync_loading">Sync loading</string>
+    <string name="async_loading">Async loading</string>
+    <string name="connection_error_message">Произошла ошибка соединения</string>
+    <string name="favourite_btn_text">В избранные</string>
+    <string name="activity_upcoming_events_text_view_default">some json</string>
+    <string name="event_card_next_report">Следующий доклад</string>
+    <string name="event_card_state_completed">Завершен</string>
+    <string name="favorite_events_button_text">На главную</string>
+    <string name="favorite_events_no_text">Здесь пока тихо</string>
+    <string name="event_card_state_next_report">Следующий доклад</string>
+    <string name="toolbar_menu_item_favorite">Favorite</string>
+    <string name="event_details_invited_speaker">Приглашённый спикер</string>
 </resources>

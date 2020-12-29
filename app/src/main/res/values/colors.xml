@@ -3,4 +3,22 @@
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#2A81DD</color>
+    <color name="primary_background">#000000</color>
+    <color name="button_background_disabled">#1A858585</color>
+    <color name="button_stroke_disabled">#331C1819</color>
+    <color name="button_background_enabled">#2A81DD</color>
+    <color name="main_activity_frame_background">#051021</color>
+    <color name="text_primary_dark">#1C1819</color>
+    <color name="edit_text_background">#00717171</color>
+    <color name="edit_text_stroke">#1C181932</color>
+    <color name="event_completed_color">#F44336</color>
+    <color name="activity_upcoming_events_sync_text_view_color">#2196F3</color>
+    <color name="activity_upcoming_events_async_text_view_color">#4CAF50</color>
+    <color name="activity_upcoming_events_error_text_view_color">#F44336</color>
+    <color name="bg_event_card_darken">#B3FFFFFF</color>
 </resources>

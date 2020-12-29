@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_background"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        android:src="@drawable/ic_default_background_image"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/activity_upcoming_events_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/recycler_view_events_bottom_size"
+        android:scrollbars="none"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/branch_item"
+        />
+
+    <TextView
+        android:id="@+id/activity_upcoming_events_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/activity_upcoming_events_error_text_view_color"
+        android:textSize="@dimen/text_size_16x"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/layout_spacing_16x"
+        />
+
+    <Button
+        android:id="@+id/activity_upcoming_events_favorites_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="@dimen/bottom_button_margin_bottom"
+        android:background="@drawable/bg_favourite_button_shape"
+        android:drawableStart="@drawable/ic_favourite_border"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:paddingHorizontal="@dimen/layout_spacing_16x"
+        android:paddingVertical="@dimen/layout_spacing_10x"
+        android:text="@string/favourite_btn_text"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/button_text_size_medium"
+        />
+
+    <ProgressBar
+        android:id="@+id/activity_upcoming_events_progress_bar"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone"
+        />
+</FrameLayout>
