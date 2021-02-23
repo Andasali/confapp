@@ -12,9 +12,9 @@ import kz.kolesateam.confapp.utils.extensions.getEventFormattedDateTime
 import kz.kolesateam.confapp.utils.extensions.show
 
 class FavoriteEventViewHolder(
-    itemView: View,
-    private val eventClickListener: EventClickListener
-): RecyclerView.ViewHolder(itemView) {
+        itemView: View,
+        private val eventClickListener: EventClickListener
+) : RecyclerView.ViewHolder(itemView) {
 
     private val completedStateTextView: TextView = itemView.findViewById(R.id.events_card_layout_completed)
     private val dateAndPlaceTextView: TextView = itemView.findViewById(R.id.events_card_date_and_place)
@@ -23,21 +23,20 @@ class FavoriteEventViewHolder(
     private val speakerJobTextView: TextView = itemView.findViewById(R.id.events_card_speaker_job)
     private val eventTitleTextView: TextView = itemView.findViewById(R.id.events_card_event_title)
 
-
-    fun onBind(event: EventData){
+    fun onBind(event: EventData) {
         fillData(event)
         initListeners(event)
 
-        if(event.isCompleted){
+        if (event.isCompleted) {
             onEventComplete()
         }
     }
 
-    private fun fillData(event: EventData){
+    private fun fillData(event: EventData) {
         dateAndPlaceTextView.text = TIME_AND_PLACE_FORMAT.format(
-            event.startTime.getEventFormattedDateTime(),
-            event.endTime.getEventFormattedDateTime(),
-            event.place
+                event.startTime.getEventFormattedDateTime(),
+                event.endTime.getEventFormattedDateTime(),
+                event.place
         )
         speakerNameTextView.text = event.speaker.fullName
         speakerJobTextView.text = event.speaker.job
@@ -61,12 +60,12 @@ class FavoriteEventViewHolder(
         }
     }
 
-    private fun onEventComplete(){
+    private fun onEventComplete() {
         completedStateTextView.show()
         itemView.setBackgroundResource(R.drawable.bg_events_card_dark)
     }
 
-    private fun getFavoriteButtonResource(isFavorite: Boolean): Int = when(isFavorite){
+    private fun getFavoriteButtonResource(isFavorite: Boolean): Int = when (isFavorite) {
         true -> R.drawable.ic_favourite_fill
         else -> R.drawable.ic_favourite_border
     }

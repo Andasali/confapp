@@ -9,15 +9,15 @@ import kz.kolesateam.confapp.favoriteEvents.domain.FavoriteEventsRepository
 import kz.kolesateam.confapp.notifications.NotificationAlarmHelper
 
 class FavoriteEventsViewModel(
-    private val favoriteEventsRepository: FavoriteEventsRepository,
-    private val notificationAlarmHelper: NotificationAlarmHelper
+        private val favoriteEventsRepository: FavoriteEventsRepository,
+        private val notificationAlarmHelper: NotificationAlarmHelper
 ) : ViewModel() {
 
     val favoriteEventsLiveData: MutableLiveData<List<EventData>> = MutableLiveData()
     val emptyEventsLiveData: MutableLiveData<EventsState> = MutableLiveData()
     val eventScreenNavigationLiveData: MutableLiveData<EventScreenNavigation> = MutableLiveData()
 
-    fun onStart(){
+    fun onStart() {
         getFavoriteEvents()
     }
 
@@ -34,26 +34,26 @@ class FavoriteEventsViewModel(
         }
     }
 
-    fun onEventClick(eventId: Int){
+    fun onEventClick(eventId: Int) {
         eventScreenNavigationLiveData.value = EventScreenNavigation.EventDetails(eventId = eventId)
     }
 
-    private fun scheduleEvent(eventData: EventData){
+    private fun scheduleEvent(eventData: EventData) {
         notificationAlarmHelper.createNotificationAlarm(
-            eventData = eventData
+                eventData = eventData
         )
     }
 
     private fun cancelEvent(eventData: EventData) {
         notificationAlarmHelper.cancelNotificationAlarm(
-            eventData = eventData
+                eventData = eventData
         )
     }
 
-    private fun getFavoriteEvents(){
+    private fun getFavoriteEvents() {
         val favoriteEventsList: List<EventData> = favoriteEventsRepository.getAllFavoriteEvents()
 
-        if(favoriteEventsList.isEmpty()){
+        if (favoriteEventsList.isEmpty()) {
             emptyEventsLiveData.value = EventsState.Empty
         } else {
             setFavoriteEvents(favoriteEventsList)
